@@ -257,12 +257,12 @@ trait AdminTrait
         $applications       = LeaveApplication::where('user_id', $id)->get();
         $applications_this_year = LeaveApplication::whereYear('created_at', date('Y'))->where('user_id', $id)->get();
         $applications_count = $applications->count();
-        $applications_this_year_count = $applications_this_year->count();
 
         $pending_count      = $applications->where('application_status_id',1)->count();
         $approved_count     = $applications->where('application_status_id',2)->count();
         $rejected_count     = $applications->where('application_status_id',3)->count();
 
+        $applications_this_year_count = $applications_this_year->count();
         $applications_days_taken_sum = $applications->where('application_status_id',2)->sum('days_taken');
         $applications_days_taken_avg = $applications->where('application_status_id',2)->avg('days_taken');
 

@@ -19,6 +19,8 @@ class FileController extends Controller
         return view('file.file_list', compact('files'));
     }
 
+    //Resources
+
     /**
      * Show the form for creating a new resource.
      *

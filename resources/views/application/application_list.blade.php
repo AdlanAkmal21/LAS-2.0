@@ -78,7 +78,7 @@
                                     <div class="dropdown-menu">
                                         <a href="{{ route('application.show', $all->id)}}"
                                             class="dropdown-item">Show</a>
-                                        @if ($all->application_status_id == 1)
+                                        @if ($all->application_status_id == 1 && $all->leave_type_id == 1)
                                         <a href="{{ route('application.edit', $all->id)}}"
                                             class="dropdown-item text-success">Edit</a>
                                         @endif

@@ -9,6 +9,7 @@ use App\Models\Holiday;
 use App\Models\LeaveApplication;
 use App\Models\RefLeaveType;
 use App\Traits\LeaveTrait;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -124,13 +125,7 @@ class LeaveApplicationController extends Controller
     {
         $all = $request->all();
 
-        //Annual Validation/ Update
-        if ($all['leave_type_id'] == 1) {
-            $this->annual_edit_trait($all, $application);
-        } else {
-        //Medical or Emergency or Unrecorded Validation/ Update
-            $this->medical_emergency_unrecorded_edit_trait($all, $application);
-        }
+        $this->annual_edit_trait($all, $application);
     }
 
     /**
@@ -141,8 +136,7 @@ class LeaveApplicationController extends Controller
      */
     public function destroy(LeaveApplication $application)
     {
-        if (File::where('application_id', $application->id)->exists()) {
-            $file        = File::where('application_id', $application->id)->first();
+        if ($file = File::where('application_id', $application->id)->first()) {
             Storage::delete("public/$file->filecategory/$file->filename");
             $file->delete();
         }
