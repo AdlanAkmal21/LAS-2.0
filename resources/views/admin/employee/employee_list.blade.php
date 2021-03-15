@@ -60,6 +60,7 @@
                                 <a class="dropdown-item" href="{{ route('admin.show', $user->id)}}">Show</a>
                                 <a class="dropdown-item text-success"
                                     href="{{ route('admin.edit', $user->id)}}">Edit</a>
+                                <a class="dropdown-item text-info"  href="{{ route('admin.application_list_employee', $user->id) }}">Applications by Employee</a>
                                 @if($user->emp_status_id != 2)
                                 <div class="dropdown-divider"></div>
                                 <form action="{{ route('admin.destroy', $user->id)}}" method="POST">

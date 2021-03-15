@@ -47,6 +47,12 @@
                                 <p>Individual Report</p>
                             </a>
                         </li>
+                        {{-- <li class="nav-item">
+                            <a href="{{ route('report.application') }}" class="nav-link">
+                                <i class="far fa-chart-bar nav-icon"></i>
+                                <p>Application Report</p>
+                            </a>
+                        </li> --}}
                     </ul>
                 </li>
 

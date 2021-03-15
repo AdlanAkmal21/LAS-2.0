@@ -61,11 +61,13 @@ Route::group(['middleware' => 'auth'], function()
             Route::get('employee/list/search/resigned',[AdminController::class, 'search_resigned'])->name('admin.search_resigned');
             Route::get('application/list',[AdminController::class, 'application_list'])->name('admin.application_list');
             Route::get('application/list/{year}',[AdminController::class, 'application_list_ty'])->name('admin.application_list_ty');
+            Route::get('application/list/user/{user_id}',[AdminController::class, 'application_list_employee'])->name('admin.application_list_employee');
             Route::get('application/{application}',[AdminController::class, 'application_show'])->name('admin.application_show');
             Route::get('report/overview', [ReportController::class, 'overview'])->name('report.overview');
             Route::get('report/individual', [ReportController::class, 'individual'])->name('report.individual');
             Route::get('report/individual/search', [ReportController::class, 'search'])->name('report.employee_search');
             Route::get('report/individual/{id}', [ReportController::class, 'view_individual'])->name('report.view_individual');
+            Route::get('report/application', [ReportController::class, 'application'])->name('report.application');
             Route::resource('file', FileController::class);
         });
             Route::resource('holiday', HolidayController::class );

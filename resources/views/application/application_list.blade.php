@@ -25,18 +25,24 @@
 
 <div class="container-fluid">
     @if(Auth::user()->leavedetail)
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <ul class="nav nav-tabs" id="nav-tab" role="tablist">
+        <li class="nav-item" role="presentation">
             <a class="nav-link active" id="nav-all-tab" data-toggle="tab" href="#nav-all" role="tab"
                 aria-controls="nav-all" aria-selected="true">All</a>
-            <a class="nav-link " id="nav-pending-tab" data-toggle="tab" href="#nav-pending" role="tab"
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="nav-pending-tab" data-toggle="tab" href="#nav-pending" role="tab"
                 aria-controls="nav-pending" aria-selected="true">Pending</a>
+        </li>
+        <li class="nav-item" role="presentation">
             <a class="nav-link" id="nav-approved-tab" data-toggle="tab" href="#nav-approved" role="tab"
                 aria-controls="nav-approved" aria-selected="false">Approved</a>
+        </li>
+        <li class="nav-item" role="presentation">
             <a class="nav-link" id="nav-rejected-tab" data-toggle="tab" href="#nav-rejected" role="tab"
                 aria-controls="nav-rejected" aria-selected="false">Rejected</a>
-        </div>
-    </nav>
+        </li>
+    </ul>
     <div class="tab-content py-3" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-all" role="tabpanel" aria-labelledby="nav-all-tab">
             @if($alls->isEmpty())
@@ -82,6 +88,17 @@
                                         <a href="{{ route('application.edit', $all->id)}}"
                                             class="dropdown-item text-success">Edit</a>
                                         @endif
+
+                                        @if ($all->application_status_id != 3)
+                                        @if (
+                                        $all->application_status_id == 1 ||
+                                        $all->leave_type_id == 2 ||
+                                        $all->leave_type_id == 4 ||
+                                        ($all->leave_type_id == 1 && $all->application_status_id == 2 && $all->from >
+                                        now()) ||
+                                        ($all->leave_type_id == 3 && $all->application_status_id == 2 && $all->from >
+                                        now())
+                                        )
                                         <div class="dropdown-divider"></div>
                                         <form action="{{ route('application.destroy', $all->id)}}" method="post">
                                             @csrf
@@ -89,6 +106,8 @@
                                             <input class="dropdown-item text-danger" role="button" type="submit"
                                                 value="Delete" onclick="return confirm('Delete Application?');">
                                         </form>
+                                        @endif
+                                        @endif
                                     </div>
                                 </div>
                             </td>
@@ -201,12 +220,17 @@
                                     <div class="dropdown-menu">
                                         <a href="{{ route('application.show', $approved->id)}}"
                                             class="dropdown-item">Show</a>
+                                        @if (($approved->leave_type_id == 2 || $approved->leave_type_id == 4) ||
+                                        (($approved->leave_type_id == 1 || $approved->leave_type_id == 3) &&
+                                        $approved->from > now()))
+                                        <div class="dropdown-divider"></div>
                                         <form action="{{ route('application.destroy', $approved->id)}}" method="post">
                                             @csrf
                                             @method('DELETE')
                                             <input class="dropdown-item text-danger" role="button" type="submit"
                                                 value="Delete" onclick="return confirm('Delete Application?');">
                                         </form>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
@@ -257,12 +281,6 @@
                                     <div class="dropdown-menu">
                                         <a href="{{ route('application.show', $rejected->id)}}"
                                             class="dropdown-item">Show</a>
-                                        <form action="{{ route('application.destroy', $rejected->id)}}" method="post">
-                                            @csrf
-                                            @method('DELETE')
-                                            <input class="dropdown-item text-danger" role="button" type="submit"
-                                                value="Delete" onclick="return confirm('Delete Application?');">
-                                        </form>
                                     </div>
                                 </div>
                             </td>

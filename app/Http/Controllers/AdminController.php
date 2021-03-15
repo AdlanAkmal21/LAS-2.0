@@ -55,7 +55,7 @@ class AdminController extends Controller
         $roles      = RefRole::where('id', '!=', 1)->get();
         $genders    = RefGender::all();
 
-        return view('admin.employee_add', compact('approvers', 'roles', 'genders'));
+        return view('admin.employee.employee_add', compact('approvers', 'roles', 'genders'));
     }
 
     /**
@@ -99,7 +99,7 @@ class AdminController extends Controller
         $this->check_approver($id);
         $user   = User::find($id);
 
-        return view('admin.employee_show', compact('user'));
+        return view('admin.employee.employee_show', compact('user'));
     }
 
     /**
@@ -114,7 +114,7 @@ class AdminController extends Controller
         $approvers              = User::where('role_id', 3)->where('emp_status_id', 1)->get();
         $refEmpStatus           = RefEmpStatus::get();
 
-        return view('admin.employee_edit', compact('user', 'approvers', 'refEmpStatus'));
+        return view('admin.employee.employee_edit', compact('user', 'approvers', 'refEmpStatus'));
     }
 
     /**
@@ -174,7 +174,7 @@ class AdminController extends Controller
         $query = $request->search;
         $users = User::where('id', '!=', 1)->where('name', 'like', "%{$query}%")->paginate(10);
 
-        return view('admin.employee_list', compact('users', 'query'));
+        return view('admin.employee.employee_list', compact('users', 'query'));
     }
 
     /**
@@ -186,7 +186,7 @@ class AdminController extends Controller
     {
         $users = User::where('id', '!=', 1)->where('emp_status_id', 2)->paginate(10);
 
-        return view('admin.employee_list', compact('users'));
+        return view('admin.employee.employee_list', compact('users'));
     }
         /**
      * Search Resigned Employees.
@@ -210,7 +210,7 @@ class AdminController extends Controller
     public function employee_list()
     {
         $users = User::where('id','!=',1)->paginate(10);
-        return view('admin.employee_list', compact('users'));
+        return view('admin.employee.employee_list', compact('users'));
     }
 
     /**
@@ -226,8 +226,9 @@ class AdminController extends Controller
         $approveds  = LeaveApplication::where('application_status_id', 2)->paginate(10, ['*'], 'approveds');
         $rejecteds  = LeaveApplication::where('application_status_id', 3)->paginate(10, ['*'], 'rejecteds');
 
-        return view('admin.application_list', compact('title', 'alls', 'pendings', 'approveds', 'rejecteds'));
+        return view('admin.application.application_list', compact('title', 'alls', 'pendings', 'approveds', 'rejecteds'));
     }
+
     /**
      * Display a listing of applications (This Year)(admin).
      *
@@ -242,7 +243,24 @@ class AdminController extends Controller
         $approveds  = LeaveApplication::whereYear('created_at', $year)->where('application_status_id', 2)->paginate(10, ['*'], 'approveds');
         $rejecteds  = LeaveApplication::whereYear('created_at', $year)->where('application_status_id', 3)->paginate(10, ['*'], 'rejecteds');
 
-        return view('admin.application_list', compact('title', 'alls', 'pendings', 'approveds', 'rejecteds'));
+        return view('admin.application.application_list', compact('title', 'alls', 'pendings', 'approveds', 'rejecteds'));
+    }
+    /**
+     * Display a listing of applications (From an Employee)(admin).
+     *
+     * @param  int $user_id
+     * @return \Illuminate\Http\Response
+     */
+    public function application_list_employee(int $user_id)
+    {
+        $user       = User::find($user_id);
+        $title      = "($user->name)";
+        $alls       = LeaveApplication::where('user_id', $user->id)->paginate(10, ['*'], 'alls');
+        $pendings   = LeaveApplication::where('user_id', $user->id)->where('application_status_id', 1)->paginate(10, ['*'], 'pendings');
+        $approveds  = LeaveApplication::where('user_id', $user->id)->where('application_status_id', 2)->paginate(10, ['*'], 'approveds');
+        $rejecteds  = LeaveApplication::where('user_id', $user->id)->where('application_status_id', 3)->paginate(10, ['*'], 'rejecteds');
+
+        return view('admin.application.application_list', compact('title', 'alls', 'pendings', 'approveds', 'rejecteds'));
     }
 
     /**
@@ -255,6 +273,6 @@ class AdminController extends Controller
     {
         $file = File::where('application_id', $application->id)->first();
 
-        return view('admin.application_show', compact('application','file'));
+        return view('admin.application.application_show', compact('application','file'));
     }
 }

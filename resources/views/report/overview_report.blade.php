@@ -321,6 +321,7 @@
                     <div class="card-body">
                         <div class="chart-pie pt-2 pb-3">
                             <canvas id="daytotalchart"></canvas>
+                            <div class="no-data" id="daytotalchartnone">No data available!</div>
                         </div>
                     </div>
                 </div>
@@ -333,6 +334,7 @@
                     <div class="card-body">
                         <div class="chart-pie pt-2 pb-3">
                             <canvas id="monthtotalchart"></canvas>
+                            <div class="no-data" id="monthtotalchartnone">No data available!</div>
                         </div>
                     </div>
                 </div>

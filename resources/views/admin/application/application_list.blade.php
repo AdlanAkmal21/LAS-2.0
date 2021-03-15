@@ -21,18 +21,24 @@
 <!-- /.content-header -->
 
 <div class="container-fluid">
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <ul class="nav nav-tabs" id="nav-tab" role="tablist">
+        <li class="nav-item" role="presentation">
             <a class="nav-link active" id="nav-all-tab" data-toggle="tab" href="#nav-all" role="tab"
                 aria-controls="nav-all" aria-selected="true">All</a>
+        </li>
+        <li class="nav-item" role="presentation">
             <a class="nav-link" id="nav-pending-tab" data-toggle="tab" href="#nav-pending" role="tab"
                 aria-controls="nav-pending" aria-selected="true">Pending</a>
+        </li>
+        <li class="nav-item" role="presentation">
             <a class="nav-link" id="nav-approved-tab" data-toggle="tab" href="#nav-approved" role="tab"
                 aria-controls="nav-approved" aria-selected="false">Approved</a>
+        </li>
+        <li class="nav-item" role="presentation">
             <a class="nav-link" id="nav-rejected-tab" data-toggle="tab" href="#nav-rejected" role="tab"
                 aria-controls="nav-rejected" aria-selected="false">Rejected</a>
-        </div>
-    </nav>
+        </li>
+    </ul>
     <div class="tab-content py-3" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-all" role="tabpanel" aria-labelledby="nav-all-tab">
             <div class="card shadow-sm border-left-primary mb-4">
@@ -46,10 +52,10 @@
                             <thead class="table-primary">
                                 <tr>
                                     <th>#</th>
+                                    <th>Applicant Name</th>
                                     <th>Leave Type</th>
                                     <th>From</th>
                                     <th>To</th>
-                                    <th>Applied At</th>
                                     <th>Status</th>
 
                                     <th colspan=2>Action</th>
@@ -59,16 +65,24 @@
                                 @foreach($alls as $key => $all)
                                 <tr>
                                     <td>{{ $alls->firstItem() + $key }}.</td>
+                                    <td>{{ $all->user->name }}</td>
                                     <td>{{ $all->refLeaveType->leave_type_name }}</td>
                                     <td>{{ $all->from }}</td>
                                     <td>{{ $all->to }}</td>
-                                    <td>{{ $all->created_at }}</td>
                                     <td
                                         class="{{ ($all->application_status_id == 2)?'text-success':(($all->application_status_id == 3)?'text-danger':'text-info') }}">
                                         {{ $all->refAppStatus->application_status_name }}</td>
                                     <td>
-                                        <a href="{{ route('admin.application_show', $all->id)}}"
-                                            class="btn btn-primary">Show</a>
+                                        <div class="dropleft">
+                                            <button class="btn btn-primary btn-sm btn-block dropdown-toggle"
+                                                data-toggle="dropdown">More</button>
+                                            <div class="dropdown-menu text-right">
+                                                <a href="{{ route('admin.application_show', $all->id) }}"
+                                                    class="dropdown-item text-secondary">Show</a>
+                                                <a href="{{ route('admin.application_list_employee', $all->user->id) }}"
+                                                    class="dropdown-item text-info">Applications by Employee</a>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -92,10 +106,10 @@
                             <thead class="table-secondary">
                                 <tr>
                                     <th>#</th>
+                                    <th>Applicant Name</th>
                                     <th>Leave Type</th>
                                     <th>From</th>
                                     <th>To</th>
-                                    <th>Applied At</th>
                                     <th>Status</th>
 
                                     <th colspan=2>Action</th>
@@ -105,17 +119,25 @@
                                 @foreach($pendings as $key => $pending)
                                 <tr>
                                     <td>{{ $pendings->firstItem() + $key }}.</td>
+                                    <td>{{ $pending->user->name }}</td>
                                     <td>{{ $pending->refLeaveType->leave_type_name }}</td>
                                     <td>{{ $pending->from }}</td>
                                     <td>{{ $pending->to }}</td>
-                                    <td>{{ $pending->created_at }}</td>
                                     <td
                                         class="{{ ($pending->application_status_id == 2)?'text-success':(($pending->application_status_id == 3)?'text-danger':'text-info') }}">
                                         {{ $pending->refAppStatus->application_status_name }}</td>
 
                                     <td>
-                                        <a href="{{ route('admin.application_show', $pending->id)}}"
-                                            class="btn btn-primary">Show</a>
+                                        <div class="dropleft">
+                                            <button class="btn btn-primary btn-sm btn-block dropdown-toggle"
+                                                data-toggle="dropdown">More</button>
+                                            <div class="dropdown-menu text-right">
+                                                <a href="{{ route('admin.application_show', $pending->id) }}"
+                                                    class="dropdown-item text-secondary">Show</a>
+                                                <a href="{{ route('admin.application_list_employee', $pending->user->id) }}"
+                                                    class="dropdown-item text-info">Applications by Employee</a>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -139,10 +161,10 @@
                             <thead class="table-success">
                                 <tr>
                                     <th>#</th>
+                                    <th>Applicant Name</th>
                                     <th>Leave Type</th>
                                     <th>From</th>
                                     <th>To</th>
-                                    <th>Applied At</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -151,16 +173,24 @@
                                 @foreach($approveds as $key => $approved)
                                 <tr>
                                     <td>{{ $approveds->firstItem() + $key }}.</td>
+                                    <td>{{ $approved->user->name }}</td>
                                     <td>{{ $approved->refLeaveType->leave_type_name }}</td>
                                     <td>{{ $approved->from }}</td>
                                     <td>{{ $approved->to }}</td>
-                                    <td>{{ $approved->created_at }}</td>
                                     <td
                                         class="{{ ($approved->application_status_id == 2)?'text-success':(($approved->application_status_id == 3)?'text-danger':'text-info') }}">
                                         {{ $approved->refAppStatus->application_status_name }}</td>
                                     <td>
-                                        <a href="{{ route('admin.application_show', $approved->id)}}"
-                                            class="btn btn-primary">Show</a>
+                                        <div class="dropleft">
+                                            <button class="btn btn-primary btn-sm btn-block dropdown-toggle"
+                                                data-toggle="dropdown">More</button>
+                                            <div class="dropdown-menu text-right">
+                                                <a href="{{ route('admin.application_show', $approved->id) }}"
+                                                    class="dropdown-item text-secondary">Show</a>
+                                                <a href="{{ route('admin.application_list_employee', $approved->user->id) }}"
+                                                    class="dropdown-item text-info">Applications by Employee</a>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -184,10 +214,10 @@
                             <thead class="table-danger">
                                 <tr>
                                     <th>#</th>
+                                    <th>Applicant Name</th>
                                     <th>Leave Type</th>
                                     <th>From</th>
                                     <th>To</th>
-                                    <th>Applied At</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -196,16 +226,24 @@
                                 @foreach($rejecteds as $key => $rejected)
                                 <tr>
                                     <td>{{ $rejecteds->firstItem() + $key }}.</td>
+                                    <td>{{ $rejected->user->name }}</td>
                                     <td>{{ $rejected->refLeaveType->leave_type_name }}</td>
                                     <td>{{ $rejected->from }}</td>
                                     <td>{{ $rejected->to }}</td>
-                                    <td>{{ $rejected->created_at }}</td>
                                     <td
                                         class="{{ ($rejected->application_status_id == 2)?'text-success':(($rejected->application_status_id == 3)?'text-danger':'text-info') }}">
                                         {{ $rejected->refAppStatus->application_status_name }}</td>
                                     <td>
-                                        <a href="{{ route('admin.application_show', $rejected->id)}}"
-                                            class="btn btn-primary">Show</a>
+                                        <div class="dropleft">
+                                            <button class="btn btn-primary btn-sm btn-block dropdown-toggle"
+                                                data-toggle="dropdown">More</button>
+                                            <div class="dropdown-menu text-right">
+                                                <a href="{{ route('admin.application_show', $rejected->id) }}"
+                                                    class="dropdown-item text-secondary">Show</a>
+                                                <a href="{{ route('admin.application_list_employee', $rejected->user->id) }}"
+                                                    class="dropdown-item text-info">Applications by Employee</a>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -218,6 +256,6 @@
             </div>
         </div>
     </div>
-</div>
 
+</div>
 @endsection

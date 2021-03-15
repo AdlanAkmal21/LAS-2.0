@@ -7,6 +7,10 @@ Chart.defaults.global.defaultFontColor = "#858796";
 var ctx1 = document.getElementById("genderchart");
 var male_count = jsbinder.dashboard_admins_array['male_count'];
 var female_count = jsbinder.dashboard_admins_array['female_count'];
+
+(male_count == undefined)?male_count = 0 : '';
+(female_count == undefined)?female_count = 0 : '';
+
 var gender_total = male_count + female_count;
 var male_percentage = Math.round((male_count / gender_total) * 100);
 var female_percentage = Math.round((female_count / gender_total) * 100);
@@ -69,6 +73,11 @@ var ctx2 = document.getElementById("applicationstatuschart");
 var pending_count = jsbinder.dashboard_admins_array['pending_count'];
 var approve_count = jsbinder.dashboard_admins_array['approve_count'];
 var reject_count = jsbinder.dashboard_admins_array['reject_count'];
+
+(pending_count == undefined)?pending_count = 0 : '';
+(approve_count == undefined)?approve_count = 0 : '';
+(reject_count == undefined)?reject_count = 0 : '';
+
 var application_total = pending_count + approve_count + reject_count;
 var pending_percentage = Math.round((pending_count / application_total) * 100);
 var approve_percentage = Math.round((approve_count / application_total) * 100);
@@ -138,6 +147,11 @@ var ctx3 = document.getElementById("roleschart");
 var admin_count = jsbinder.dashboard_admins_array['admin_count'];
 var employee_count = jsbinder.dashboard_admins_array['employee_count'];
 var approver_count = jsbinder.dashboard_admins_array['approver_count'];
+
+(admin_count == undefined)?admin_count = 0 : '';
+(employee_count == undefined)?employee_count = 0 : '';
+(approver_count == undefined)?approver_count = 0 : '';
+
 var roles_total = admin_count + employee_count + approver_count;
 var admin_percentage = Math.round((admin_count / roles_total) * 100);
 var employee_percentage = Math.round((employee_count / roles_total) * 100);
@@ -204,6 +218,10 @@ var roleschart = new Chart(ctx3, {
 var ctx4 = document.getElementById("empstatuschart");
 var working_count = jsbinder.dashboard_admins_array['working_count'];
 var resigned_count = jsbinder.dashboard_admins_array['resigned_count'];
+
+(working_count == undefined)?working_count = 0 : '';
+(resigned_count == undefined)?resigned_count = 0 : '';
+
 var emp_status_total = working_count + resigned_count;
 var working_percentage = Math.round((working_count / emp_status_total) * 100);
 var resign_percentage = Math.round((resigned_count / emp_status_total) * 100);
@@ -250,7 +268,7 @@ var empstatuschart = new Chart(ctx4, {
         cutoutPercentage: 50,
         animation: {
             onComplete: function () {
-                if (roles_total === 0) {
+                if (emp_status_total === 0) {
                     document.getElementById(
                         "empstatuschartnone"
                     ).style.display = "block";
@@ -267,6 +285,10 @@ var ctx5 = document.getElementById("thisyearapplicationchart");
 var applications_count = jsbinder.dashboard_admins_array['applications_count'];
 var applications_this_year_count = jsbinder.dashboard_admins_array['applications_this_year_count'];
 var applications_other_year_count = jsbinder.dashboard_admins_array['applications_other_year_count'];
+
+(applications_count == undefined)?applications_count = 0 : '';
+(applications_this_year_count == undefined)?applications_this_year_count = 0 : '';
+(applications_other_year_count == undefined)?applications_other_year_count = 0 : '';
 
 var this_year = Math.round(
     (applications_this_year_count / applications_count) * 100
@@ -367,6 +389,17 @@ var friday_count = jsbinder.dashboard_admins_array['friday_count'];
 var saturday_count = jsbinder.dashboard_admins_array['saturday_count'];
 var sunday_count = jsbinder.dashboard_admins_array['sunday_count'];
 var highest_day_value = jsbinder.dashboard_admins_array['highest_day_value'];
+
+(monday_count == undefined)?monday_count = 0 : '';
+(tuesday_count == undefined)?tuesday_count = 0 : '';
+(wednesday_count == undefined)?wednesday_count = 0 : '';
+(thursday_count == undefined)?thursday_count = 0 : '';
+(friday_count == undefined)?friday_count = 0 : '';
+(saturday_count == undefined)?saturday_count = 0 : '';
+(sunday_count == undefined)?sunday_count = 0 : '';
+(highest_day_value == undefined)?highest_day_value = 0 : '';
+
+var days_total = monday_count+tuesday_count+wednesday_count+thursday_count+friday_count+saturday_count+sunday_count;
 
 var daytotalchart = new Chart(ctx6, {
     type: "bar",
@@ -480,6 +513,18 @@ var daytotalchart = new Chart(ctx6, {
                 },
             },
         },
+        animation: {
+            onComplete: function () {
+                if (days_total === 0) {
+                    document.getElementById(
+                        "daytotalchartnone"
+                    ).style.display = "block";
+                    document.getElementById(
+                        "daytotalchart"
+                    ).style.display = "none";
+                }
+            },
+        },
     },
 });
 
@@ -499,6 +544,22 @@ var november_count = jsbinder.dashboard_admins_array['november_count'];
 var december_count = jsbinder.dashboard_admins_array['december_count'];
 
 var highest_month_value = jsbinder.dashboard_admins_array['highest_month_value'];
+
+(january_count == undefined)?january_count = 0 : '';
+(february_count == undefined)?february_count = 0 : '';
+(march_count == undefined)?march_count = 0 : '';
+(april_count == undefined)?april_count = 0 : '';
+(may_count == undefined)?may_count = 0 : '';
+(june_count == undefined)?june_count = 0 : '';
+(july_count == undefined)?july_count = 0 : '';
+(august_count == undefined)?august_count = 0 : '';
+(september_count == undefined)?september_count = 0 : '';
+(october_count == undefined)?october_count = 0 : '';
+(november_count == undefined)?november_count = 0 : '';
+(december_count == undefined)?december_count = 0 : '';
+(highest_month_value == undefined)?highest_month_value = 0 : '';
+
+var month_total = january_count+february_count+march_count+april_count+may_count+june_count+july_count+august_count+september_count+october_count+november_count+december_count ;
 
 var monthtotalchart = new Chart(ctx7, {
     type: "bar",
@@ -619,6 +680,18 @@ var monthtotalchart = new Chart(ctx7, {
                         " day(s)"
                     );
                 },
+            },
+        },
+        animation: {
+            onComplete: function () {
+                if (month_total === 0) {
+                    document.getElementById(
+                        "monthtotalchartnone"
+                    ).style.display = "block";
+                    document.getElementById(
+                        "monthtotalchart"
+                    ).style.display = "none";
+                }
             },
         },
     },
