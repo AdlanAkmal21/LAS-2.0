@@ -86,7 +86,7 @@
 
 
         <div class="table-responsive-lg">
-            <table class="table table-sm table-bordered table-striped">
+            <table class="table table-sm table-bordered table-striped text-center">
                 <thead class="table-dark">
                     <tr>
                         <th>#</th>
@@ -94,16 +94,18 @@
                         <th>Leave Type</th>
                         <th>From</th>
                         <th>To</th>
+                        <th>Balance Leaves</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($application_period_array["applications"] as $key => $application)
                     <tr>
                         <td>{{ $application_period_array["applications"]->firstItem() + $key }}.</td>
-                        <td>{{ $application->user->name }}</td>
+                        <td class="text-left">{{ $application->user->name }}</td>
                         <td>{{ $application->refLeaveType->leave_type_name }}</td>
                         <td>{{ $application->from }}</td>
                         <td>{{ $application->to }}</td>
+                        <td>{{ $application->user->leavedetail->balance_leaves }}</td>
                     </tr>
                     @endforeach
                 </tbody>

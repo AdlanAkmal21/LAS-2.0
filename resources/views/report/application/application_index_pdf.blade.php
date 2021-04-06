@@ -103,12 +103,10 @@
                 </thead>
                 <tbody>
                     @foreach ($most_this_month as $most)
-                    @if ($most->application_count != 0)
                     <tr>
                         <td>{{ $most->name }}</td>
                         <td class="text-center">{{ $most->application_count }}</td>
                     </tr>
-                    @endif
                     @endforeach
                 </tbody>
             </table>
