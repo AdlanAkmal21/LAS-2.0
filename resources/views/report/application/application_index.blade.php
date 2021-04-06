@@ -77,7 +77,7 @@
                                     class="float-right"><b>{{ $application_report_array['annual_count'] }}</b>/{{ $application_report_array['until_today'] }}</span>
                                 <div class="progress progress-sm">
                                     <div class="progress-bar bg-danger"
-                                        style="width: {{ ($application_report_array['annual_count']/$application_report_array['until_today'])*100 }}%">
+                                        style="width: {{ ($application_report_array['until_today'] == 0)? 0 : (($application_report_array['annual_count']/$application_report_array['until_today'])*100) }}%">
                                     </div>
                                 </div>
                             </div>
@@ -89,7 +89,7 @@
                                     class="float-right"><b>{{ $application_report_array['medical_count'] }}</b>/{{ $application_report_array['until_today'] }}</span>
                                 <div class="progress progress-sm">
                                     <div class="progress-bar bg-warning"
-                                        style="width: {{ ($application_report_array['medical_count']/$application_report_array['until_today'])*100 }}%">
+                                        style="width: {{ ($application_report_array['until_today'] == 0)? 0 : (($application_report_array['medical_count']/$application_report_array['until_today'])*100) }}%">
                                     </div>
                                 </div>
                             </div>
@@ -101,7 +101,7 @@
                                     class="float-right"><b>{{ $application_report_array['emergency_count'] }}</b>/{{ $application_report_array['until_today'] }}</span>
                                 <div class="progress progress-sm">
                                     <div class="progress-bar bg-success"
-                                        style="width: {{ ($application_report_array['emergency_count']/$application_report_array['until_today'])*100 }}%">
+                                        style="width: {{ ($application_report_array['until_today'] == 0)? 0 : (($application_report_array['emergency_count']/$application_report_array['until_today'])*100) }}%">
                                     </div>
                                 </div>
                             </div>
@@ -113,7 +113,7 @@
                                     class="float-right"><b>{{ $application_report_array['unrecorded_count'] }}</b>/{{ $application_report_array['until_today'] }}</span>
                                 <div class="progress progress-sm">
                                     <div class="progress-bar bg-info"
-                                        style="width: {{ ($application_report_array['unrecorded_count']/$application_report_array['until_today'])*100 }}%">
+                                        style="width: {{ ($application_report_array['until_today'] == 0)? 0 : (($application_report_array['unrecorded_count']/$application_report_array['until_today'])*100) }}%">
                                     </div>
                                 </div>
                             </div>
@@ -295,7 +295,7 @@
                     <div class="row">
                         <div class="col-6">
                             <canvas id="applicationsummarychart"></canvas>
-                            <div class="no-data align-self-center" id="applicationsummarychartnone">No data
+                            <div class="no-data-application align-self-center" id="applicationsummarychartnone">No data
                                 available!</div>
                         </div>
                         <div class="col-6 d-flex align-items-center">
