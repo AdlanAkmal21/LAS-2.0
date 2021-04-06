@@ -21,7 +21,7 @@
                 <h1 style="font-size:4vw;">Forbidden / Access Denied</h1>
                 <p style="font-size:2vw;">Sorry, but it seems like you don't have permission</br> to access this
                     page.</p>
-                <a class=" btn btn-danger" href="javascript:history.back()">Go Back</a>
+                <a class=" btn btn-danger" href="{{ (Auth::user()->role_id == 1)? route('admin.index') : route('user.index') }}">Go to Homepage</a>
             </div>
         </div>
     </div>

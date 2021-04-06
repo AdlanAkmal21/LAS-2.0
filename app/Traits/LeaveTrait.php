@@ -116,7 +116,9 @@ trait LeaveTrait
         (isset($all['half_day'])) ? ($half_day = $all['half_day']) : ($half_day = null);
         (isset($all['reason'])) ? ($reason = $all['reason']) : ($reason = null);
 
-        if ($half_day != null && $days_taken != 0.5){$days_taken = $days_taken - (0.5);}
+        if ($half_day != null && $days_taken != 0.5) {
+            $days_taken = $days_taken - (0.5);
+        }
 
         if ($days_taken <= 2 && $from_today < 2) {
             return back()->withInput()->with('error', 'Cannot Apply: Application Must Be Applied 2 Days Before!')->send();
@@ -151,7 +153,9 @@ trait LeaveTrait
 
             (isset($all['half_day'])) ? ($half_day = $all['half_day']) : ($half_day = null);
             $days_taken = $all['days_taken'];
-            if ($half_day != null && $days_taken != 0.5){$days_taken = $days_taken - (0.5);}
+            if ($half_day != null && $days_taken != 0.5) {
+                $days_taken = $days_taken - (0.5);
+            }
 
             $application                = new LeaveApplication();
             $application->user_id       = Auth::id();
@@ -163,9 +167,12 @@ trait LeaveTrait
             $application->days_taken    = $days_taken;
             $application->reason        = $all['reason'];
 
-            ($all['leave_type_id'] == 2)
-                ? $application->application_status_id = 2
-                : $application->application_status_id = 1;
+            if ($all['leave_type_id'] == 2) {
+                $application->application_status_id = 2;
+                $application->approval_date = Carbon::now();
+            } else {
+                $application->application_status_id = 1;
+            }
 
             $application->save();
 

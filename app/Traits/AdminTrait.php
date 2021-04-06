@@ -277,4 +277,172 @@ trait AdminTrait
         );
     }
 
+    /**
+     * Queries Application Report.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function application_report()
+    {
+        $today  = Carbon::today();
+        $start  = $today->startOfWeek(Carbon::SUNDAY)->format('Y-m-d');
+        $end    = $today->endOfWeek(Carbon::SATURDAY)->format('Y-m-d');
+        $start_dmy  = $today->startOfWeek(Carbon::SUNDAY)->format('d/m/Y');
+        $end_dmy    = $today->endOfWeek(Carbon::SATURDAY)->format('d/m/Y');
+
+        $this_week  = LeaveApplication::whereBetween('created_at', [$start, $end])->count();
+        $this_month = LeaveApplication::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count();
+        $this_year  = LeaveApplication::whereYear('created_at', date('Y'))->count();
+        $until_today= LeaveApplication::all()->count();
+
+        $annuals       = LeaveApplication::where('leave_type_id',1)->paginate(10, ['*'], 'annuals');
+        $medicals      = LeaveApplication::where('leave_type_id',2)->paginate(10, ['*'], 'medicals');
+        $emergencies   = LeaveApplication::where('leave_type_id',3)->paginate(10, ['*'], 'emergencies');
+        $unrecordeds   = LeaveApplication::where('leave_type_id',4)->paginate(10, ['*'], 'unrecordeds');
+
+        $annual_count       = $annuals->count();
+        $medical_count      = $medicals->count();
+        $emergency_count    = $emergencies->count();
+        $unrecorded_count   = $unrecordeds->count();
+
+
+        return compact(
+            'start',
+            'end',
+            'start_dmy',
+            'end_dmy',
+            'this_week',
+            'this_month',
+            'this_year',
+            'until_today',
+            'annual_count',
+            'medical_count',
+            'emergency_count',
+            'unrecorded_count',
+            'annuals',
+            'medicals',
+            'emergencies',
+            'unrecordeds',
+        );
+    }
+
+    /**
+     * Queries Application Report.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function application_report2()
+    {
+        $annual_monthly = collect([
+            'jan' => $jan = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 1)->whereYear('created_at', date('Y'))->count(),
+            'feb' => $feb = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 2)->whereYear('created_at', date('Y'))->count(),
+            'mar' => $mar = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 3)->whereYear('created_at', date('Y'))->count(),
+            'apr' => $apr = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 4)->whereYear('created_at', date('Y'))->count(),
+            'may' => $may = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 5)->whereYear('created_at', date('Y'))->count(),
+            'jun' => $jun = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 6)->whereYear('created_at', date('Y'))->count(),
+            'jul' => $jul = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 7)->whereYear('created_at', date('Y'))->count(),
+            'aug' => $aug = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 8)->whereYear('created_at', date('Y'))->count(),
+            'sep' => $sep = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 9)->whereYear('created_at', date('Y'))->count(),
+            'oct' => $oct = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 10)->whereYear('created_at', date('Y'))->count(),
+            'nov' => $nov = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 11)->whereYear('created_at', date('Y'))->count(),
+            'dec' => $dec = LeaveApplication::where('leave_type_id',1)->whereMonth('created_at', 12)->whereYear('created_at', date('Y'))->count(),
+        ]);
+        $annual_monthly->toArray();
+
+        $medical_monthly = collect([
+            'jan' => $jan = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 1)->whereYear('created_at', date('Y'))->count(),
+            'feb' => $feb = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 2)->whereYear('created_at', date('Y'))->count(),
+            'mar' => $mar = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 3)->whereYear('created_at', date('Y'))->count(),
+            'apr' => $apr = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 4)->whereYear('created_at', date('Y'))->count(),
+            'may' => $may = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 5)->whereYear('created_at', date('Y'))->count(),
+            'jun' => $jun = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 6)->whereYear('created_at', date('Y'))->count(),
+            'jul' => $jul = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 7)->whereYear('created_at', date('Y'))->count(),
+            'aug' => $aug = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 8)->whereYear('created_at', date('Y'))->count(),
+            'sep' => $sep = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 9)->whereYear('created_at', date('Y'))->count(),
+            'oct' => $oct = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 10)->whereYear('created_at', date('Y'))->count(),
+            'nov' => $nov = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 11)->whereYear('created_at', date('Y'))->count(),
+            'dec' => $dec = LeaveApplication::where('leave_type_id',2)->whereMonth('created_at', 12)->whereYear('created_at', date('Y'))->count(),
+        ]);
+        $medical_monthly->toArray();
+
+        $emergency_monthly = collect([
+            'jan' => $jan = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 1)->whereYear('created_at', date('Y'))->count(),
+            'feb' => $feb = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 2)->whereYear('created_at', date('Y'))->count(),
+            'mar' => $mar = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 3)->whereYear('created_at', date('Y'))->count(),
+            'apr' => $apr = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 4)->whereYear('created_at', date('Y'))->count(),
+            'may' => $may = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 5)->whereYear('created_at', date('Y'))->count(),
+            'jun' => $jun = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 6)->whereYear('created_at', date('Y'))->count(),
+            'jul' => $jul = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 7)->whereYear('created_at', date('Y'))->count(),
+            'aug' => $aug = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 8)->whereYear('created_at', date('Y'))->count(),
+            'sep' => $sep = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 9)->whereYear('created_at', date('Y'))->count(),
+            'oct' => $oct = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 10)->whereYear('created_at', date('Y'))->count(),
+            'nov' => $nov = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 11)->whereYear('created_at', date('Y'))->count(),
+            'dec' => $dec = LeaveApplication::where('leave_type_id',3)->whereMonth('created_at', 12)->whereYear('created_at', date('Y'))->count(),
+        ]);
+        $emergency_monthly->toArray();
+
+        $unrecorded_monthly = collect([
+            'jan' => $jan = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 1)->whereYear('created_at', date('Y'))->count(),
+            'feb' => $feb = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 2)->whereYear('created_at', date('Y'))->count(),
+            'mar' => $mar = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 3)->whereYear('created_at', date('Y'))->count(),
+            'apr' => $apr = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 4)->whereYear('created_at', date('Y'))->count(),
+            'may' => $may = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 5)->whereYear('created_at', date('Y'))->count(),
+            'jun' => $jun = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 6)->whereYear('created_at', date('Y'))->count(),
+            'jul' => $jul = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 7)->whereYear('created_at', date('Y'))->count(),
+            'aug' => $aug = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 8)->whereYear('created_at', date('Y'))->count(),
+            'sep' => $sep = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 9)->whereYear('created_at', date('Y'))->count(),
+            'oct' => $oct = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 10)->whereYear('created_at', date('Y'))->count(),
+            'nov' => $nov = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 11)->whereYear('created_at', date('Y'))->count(),
+            'dec' => $dec = LeaveApplication::where('leave_type_id',4)->whereMonth('created_at', 12)->whereYear('created_at', date('Y'))->count(),
+        ]);
+        $unrecorded_monthly->toArray();
+
+        return compact('annual_monthly','medical_monthly','emergency_monthly','unrecorded_monthly');
+    }
+
+    /**
+     * Queries Application Report.
+     *
+     * @param int $period
+     * @return \Illuminate\Http\Response
+     */
+    public function application_period(int $period)
+    {
+        $today  = Carbon::today();
+        $start  = $today->startOfWeek(Carbon::SUNDAY)->format('Y-m-d');
+        $end    = $today->endOfWeek(Carbon::SATURDAY)->format('Y-m-d');
+
+        if ($period == 1) {
+            $period_title = 'This Week';
+            $period_title2 = 'Weekly';
+            $period_title3 = "$start - $end";
+            $applications  = LeaveApplication::whereBetween('created_at', [$start, $end])->paginate(10, ['*'], 'applications');
+            $applications_all  = LeaveApplication::whereBetween('created_at', [$start, $end])->get();
+        }
+        elseif ($period == 2) {
+            $period_title = 'This Month';
+            $period_title2 = 'Monthly';
+            $period_title3 = date("F");
+            $applications = LeaveApplication::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->paginate(10, ['*'], 'applications');
+            $applications_all = LeaveApplication::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->paginate(10, ['*'], 'applications');
+        }
+        elseif ($period == 3) {
+            $period_title = 'This Year';
+            $period_title2 = 'Yearly';
+            $period_title3 = date("Y");
+            $applications  = LeaveApplication::whereYear('created_at', date('Y'))->paginate(10, ['*'], 'applications');
+            $applications_all  = LeaveApplication::whereYear('created_at', date('Y'))->get();
+        }
+        else {
+            $period_title = 'Until Today';
+            $period_title2 = 'Overall';
+            $period_title3 = 'Dec 2020 - Present';
+            $applications = LeaveApplication::paginate(10, ['*'], 'applications');
+            $applications_all = LeaveApplication::all();
+        }
+
+        return compact('period_title','period_title2','period_title3','applications','applications_all');
+    }
+
+
 }

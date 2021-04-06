@@ -85,14 +85,6 @@ trait ApproverTrait
         $application->approval_date            = Carbon::now();
         $application->save();
 
-        //Annual & Emergency Leave
-        if ($application->leave_type_id == 1 || $application->leave_type_id == 3)
-        {
-            $application->leavedetail->balance_leaves = ($application->leavedetail->balance_leaves)-($application->days_taken);
-            $application->leavedetail->taken_so_far  += $application->days_taken;
-            $application->leavedetail->save();
-        }
-
         Mail::to($application->user->email)->send(new ApproverMail($application->id));
         $application->user->notify(new ApproverAlert($application));
     }

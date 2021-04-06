@@ -14,7 +14,7 @@ use App\Models\LeaveApplication;
 use App\Models\RefRole;
 use App\Models\RefEmpStatus;
 use App\Models\RefGender;
-
+use App\Models\RefLeaveType;
 use App\Traits\AdminTrait;
 use App\Traits\IndexTrait;
 use App\Traits\LeaveTrait;
@@ -38,9 +38,8 @@ class AdminController extends Controller
     public function index()
     {
         $dashboard_admins_array   = $this->dashboard_admins();
-        $offdutyArray           = $this->indexes();
+        $offdutyArray           = $this->off_duty_index();
 
-        // dd($offdutyArray);
         return view('admin.dashboard', compact('dashboard_admins_array', 'offdutyArray'));
     }
 
@@ -156,7 +155,9 @@ class AdminController extends Controller
         $user = User::find($id);
         $user->emp_status_id = 2;
 
-        if ($user->role_id == 3){ $this->resign_approver($user->id); }
+        if ($user->role_id == 3) {
+            $this->resign_approver($user->id);
+        }
 
         $user->save();
 
@@ -188,7 +189,7 @@ class AdminController extends Controller
 
         return view('admin.employee.employee_list', compact('users'));
     }
-        /**
+    /**
      * Search Resigned Employees.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -209,7 +210,7 @@ class AdminController extends Controller
      */
     public function employee_list()
     {
-        $users = User::where('id','!=',1)->paginate(10);
+        $users = User::where('id', '!=', 1)->paginate(10);
         return view('admin.employee.employee_list', compact('users'));
     }
 
@@ -273,6 +274,50 @@ class AdminController extends Controller
     {
         $file = File::where('application_id', $application->id)->first();
 
-        return view('admin.application.application_show', compact('application','file'));
+        return view('admin.application.application_show', compact('application', 'file'));
+    }
+
+    /**
+     * Display the listing of resource and search resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function search_application()
+    {
+        $applications  = LeaveApplication::paginate(10);
+        $refLeaveTypes = RefLeaveType::all();
+
+        return view('admin.application.search_application', compact('applications', 'refLeaveTypes'));
+    }
+
+    /**
+     * Search for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search_application_search(Request $request)
+    {
+        $refLeaveTypes = RefLeaveType::all();
+
+        if ($request->leave_type_id && $request->from && $request->to) {
+            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->whereDate('from', $request->from)->whereDate('to', $request->to)->paginate(10);
+        } elseif ($request->from && $request->to) {
+            $applications = LeaveApplication::whereDate('from', '>=', $request->from)->whereDate('to', '<=', $request->to)->paginate(10);
+        } elseif ($request->leave_type_id && $request->from) {
+            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->whereDate('from', $request->from)->paginate(10);
+        } elseif ($request->leave_type_id && $request->to) {
+            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->whereDate('to', $request->to)->paginate(10);
+        } elseif ($request->from) {
+            $applications = LeaveApplication::whereDate('from', $request->from)->paginate(10);
+        } elseif ($request->to) {
+            $applications = LeaveApplication::whereDate('to', $request->to)->paginate(10);
+        } elseif ($request->leave_type_id) {
+            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->paginate(10);
+        } else {
+            $applications = LeaveApplication::paginate(10);
+        }
+
+        return view('admin.application.search_application', compact('applications', 'refLeaveTypes'));
     }
 }

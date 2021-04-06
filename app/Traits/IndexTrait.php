@@ -4,10 +4,9 @@ namespace App\Traits;
 
 use App\Models\LeaveApplication;
 use App\Models\User;
-use App\Models\UserLog;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 trait IndexTrait
 {
@@ -16,29 +15,37 @@ trait IndexTrait
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexes()
+    public function off_duty_index()
     {
         //Query Off-Duty
-        $today  = Carbon::today();
-        $start  = $today->startOfWeek(Carbon::SUNDAY)->format('Y-m-d');
-        $end    = $today->endOfWeek(Carbon::SATURDAY)->format('Y-m-d');
+        $today  = CarbonImmutable::today();
+        $start  = $today->startOfWeek(Carbon::SUNDAY);
+        $end    = $today->endOfWeek(Carbon::SATURDAY);
 
-        $offduty     = LeaveApplication::where(function ($query) use ($start, $end) {
-            $query->where('application_status_id', 2)
-                ->where('from', '>=', $start)
-                ->where('from', '<=', $end);
-        })
-            ->orWhere(function ($query) use ($start, $end) {
-                $query->where('application_status_id', 2)
-                    ->where('from', '<', $start)
-                    ->where('to', '>', $end);
+        $offduty = LeaveApplication::where('application_status_id', 2)
+            ->where(function ($query) use ($today) {
+                $query->whereDate('from', $today)
+                    ->whereDate('to', $today);
             })
-            ->orWhere(function ($query) use ($start, $today) {
-                $query->where('application_status_id', 2)
-                    ->where('to', '>=', $start)
-                    ->where('to', '<', $today);
+            ->orWhere(function ($query) use ($today) {
+                $query->whereDate('from', '<=', $today)
+                    ->whereDate('to', '>=', $today);
             })
             ->paginate(5);
+
+        //Counts All Distinct Off-Duty Staffs.
+        $offduty_count = LeaveApplication::where('application_status_id', 2)
+            ->where(function ($query) use ($today) {
+                $query->whereDate('from', $today)
+                    ->whereDate('to', $today);
+            })
+            ->orWhere(function ($query) use ($today) {
+                $query->whereDate('from', '<=', $today)
+                    ->whereDate('to', '>=', $today);
+            })
+            ->distinct('user_id')
+            ->count();
+
 
         //Change Status of Off-Duty Staffs (Leave or Long Leave)
         if (isset($offduty)) {
@@ -70,39 +77,29 @@ trait IndexTrait
             User::query()->update(['emp_status_id' => 1]);
         }
 
-        //Counts All Distinct Off-Duty Staffs.
-        $offduty_count = LeaveApplication::where(function ($query) use ($start, $end) {
-            $query->where('application_status_id', 2)
-                ->where('from', '>=', $start)
-                ->where('from', '<=', $end);
-            })
-            ->orWhere(function ($query) use ($start, $end) {
-                $query->where('application_status_id', 2)
-                    ->where('from', '<', $start)
-                    ->where('to', '>', $end);
-            })
-            ->orWhere(function ($query) use ($start, $today) {
-                $query->where('application_status_id', 2)
-                    ->where('to', '>=', $start)
-                    ->where('to', '<', $today);
-            })
-            ->distinct('user_id')
-            ->count();
+        return compact('offduty', 'offduty_count');
+    }
+
+    public function application_index()
+    {
+        $today  = CarbonImmutable::today();
 
         //Check Pendings. If Past Today, Auto-Reject Applications.
-        if (LeaveApplication::where('to', '<=', Carbon::today())->exists()) {
-            $applications = LeaveApplication::where('to', '<', Carbon::today())->get();
+        if ($applications = LeaveApplication::where('to', '<=', Carbon::today())
+            ->where('application_status_id', 1)
+            ->where('leave_type_id', 1)
+            ->get()
+        ) {
             foreach ($applications as $application) {
-                if ($application->application_status_id == 1 && $application->leave_type_id == 1) {
-                    $application->application_status_id = 3;
-                    $application->approval_date = Carbon::now();
-                    $application->save();
-                }
+                $application->application_status_id = 3;
+                $application->approval_date = Carbon::now();
+                $application->save();
             }
         }
 
-        //Yearly Carry-Over
+        //Check Pendings & Leaves Taken So Far.
         if (Auth::user()->role_id != 1 && Auth::user()->leavedetail) {
+            //Yearly Carry-Over
             if (Carbon::now()->year > Auth::user()->userdetail->last_carry_over) {
                 Auth::user()->leavedetail->annual_e         = 14;
                 Auth::user()->leavedetail->taken_so_far     = 0;
@@ -114,9 +111,21 @@ trait IndexTrait
                 Auth::user()->userdetail->last_carry_over = Carbon::now()->year;
                 Auth::user()->userdetail->save();
             }
+
+            //Application Sum = Leaves Taken So Far.
+            $application_sum = LeaveApplication::where('application_status_id', 2)
+                ->whereYear('created_at', date('Y'))
+                ->where('from', '<=', $today)
+                ->where(function ($query) {
+                    $query->where('leave_type_id', 1)
+                        ->orWhere('leave_type_id', 3);
+                })
+                ->sum('days_taken');
+
+            $leavedetail = Auth::user()->leavedetail;
+            $leavedetail->taken_so_far      = $application_sum;
+            $leavedetail->balance_leaves    = $leavedetail->total_leaves - $application_sum;
+            $leavedetail->save();
         }
-
-        return compact('offduty', 'offduty_count');
     }
-
 }

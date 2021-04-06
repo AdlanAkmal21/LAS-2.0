@@ -6,9 +6,10 @@ use App\Models\LeaveApplication;
 use App\Models\User;
 use App\Traits\AdminTrait;
 use App\Traits\UserTrait;
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laracasts\Utilities\JavaScript\JavaScriptFacade;
+use Jimmyjs\ReportGenerator\Facades\PdfReportFacade as PdfReport;
 
 class ReportController extends Controller
 {
@@ -29,20 +30,6 @@ class ReportController extends Controller
     }
 
     /**
-     * Search for the resource.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request)
-    {
-        $query = $request->search;
-        $users = User::where('id', '!=', 1)->where('name', 'like', "%{$query}%")->paginate(10);
-
-        return view('report.individual_list', compact('users', 'query'));
-    }
-
-    /**
      * Display a listing of the individuals.
      *
      * @return \Illuminate\Http\Response
@@ -51,7 +38,21 @@ class ReportController extends Controller
     {
         $users = User::where('users.id', '!=', 1)->paginate(10);
 
-        return view('report.individual_list', compact('users'));
+        return view('report.individual.individual_list', compact('users'));
+    }
+
+    /**
+     * Search for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search_employee(Request $request)
+    {
+        $query = $request->search;
+        $users = User::where('id', '!=', 1)->where('name', 'like', "%{$query}%")->paginate(10);
+
+        return view('report.individual.individual_list', compact('users', 'query'));
     }
 
     /**
@@ -67,7 +68,7 @@ class ReportController extends Controller
 
         JavaScriptFacade::put(['employee_report_array' =>  $employee_report_array]);
 
-        return view('report.individual_report', compact('user','employee_report_array'));
+        return view('report.individual.individual_report', compact('user', 'employee_report_array'));
     }
 
     /**
@@ -77,8 +78,62 @@ class ReportController extends Controller
      */
     public function application()
     {
-        $alls = LeaveApplication::paginate(10, ['*'], 'alls');
+        $users  = User::where('id', '!=', 1)->paginate(10, ['*'], 'users');
+        $most_this_month = User::where('id', '!=', 1)->withCount('application')->orderBy('application_count', 'desc')->paginate(5, ['*'], 'most_this_month');
+        $application_report_array = $this->application_report();
+        $monthly_array = $this->application_report2();
 
-        return view('report.application_list', compact('alls'));
+        JavaScriptFacade::put([
+            'application_report_array' =>  $application_report_array,
+            'monthly_array' =>  $monthly_array,
+        ]);
+
+        return view(
+            'report.application.application_index',
+            compact('users', 'application_report_array', 'most_this_month')
+        );
     }
+
+    /**
+     * Search for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search_application_employee(Request $request)
+    {
+        $query = $request->search;
+        $users = User::where('id', '!=', 1)->where('name', 'like', "%{$query}%")->paginate(10, ['*'], 'users');
+        $most_this_month = User::where('id', '!=', 1)->withCount('application')->orderBy('application_count', 'desc')->paginate(5, ['*'], 'most_this_month');
+        $application_report_array = $this->application_report();
+        $monthly_array = $this->application_report2();
+
+
+        JavaScriptFacade::put([
+            'application_report_array' =>  $application_report_array,
+            'monthly_array' =>  $monthly_array,
+        ]);
+
+        return view(
+            'report.application.application_index',
+            compact('users', 'query', 'application_report_array', 'most_this_month')
+        );
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $period
+     * @return \Illuminate\Http\Response
+     */
+    public function application_period_overview(int $period)
+    {
+        $application_period_array = $this->application_period($period);
+
+        return view(
+            'report.application.application_period_overview',
+            compact('period', 'application_period_array')
+        );
+    }
+
 }

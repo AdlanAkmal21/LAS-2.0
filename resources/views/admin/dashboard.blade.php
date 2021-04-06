@@ -96,7 +96,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Off-Duty</h3>
                 </div>
-                @if($offdutyArray['offduty_count'] != 0)
+                @if(!$offdutyArray['offduty']->isEmpty())
                 <div class="card-body">
                     <div class="mb-3">
                         <p class="m-0">Number of Off-Duty Employees: {{$offdutyArray['offduty_count']}}</p>

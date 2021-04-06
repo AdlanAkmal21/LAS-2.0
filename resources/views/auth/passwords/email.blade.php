@@ -16,9 +16,9 @@
     <div class="container">
         <!-- Outer Row -->
         <div class="row justify-content-center">
-            <div class="col-xl-10 col-lg-12 col-md-9">
+            <div class="col-10">
                 <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-header">{{ __('Reset Password') }}</div>
+                    <div class="card-header text-dark">{{ __('Reset Password') }}</div>
                     <div class="card-body">
                         @include('partials._validation')
                         @include('partials._notifications')
@@ -28,19 +28,19 @@
                             @csrf
 
                             <div class="form-group row">
-                                <label for="email"
-                                    class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="email" type="email" class="form-control" name="email"
-                                        value="{{ old('email') }}" autofocus>
+                                <div class="col">
+                                    <div class="form-row">
+                                        <label for="email" class="text-dark col-sm-2">Email:</label>
+                                        <input id="email" type="email" placeholder="Enter your email for password reset." class="form-control col-sm-10" name="email"
+                                            value="{{ old('email') }}">
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group row mb-0">
-                                <div class="col-md-6 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ __('Send Password Reset Link') }}
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        {{ __('Send Email') }}
                                     </button>
                                 </div>
                             </div>

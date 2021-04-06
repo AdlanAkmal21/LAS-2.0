@@ -36,7 +36,8 @@
                             @csrf
 
                             <div class="form-group row mt-2">
-                                <label for="name" class="col-xl-3 col-lg-3 col-md-3 col-form-label">Employee Name</label>
+                                <label for="name" class="col-xl-3 col-lg-3 col-md-3 col-form-label">Employee
+                                    Name</label>
                                 <div class="col-xl-9 col-lg-9 col-md-9">
                                     <input type="text" readonly class="form-control" readonly="readonly" id="name"
                                         value="{{Auth::user()->name}}">
@@ -44,7 +45,8 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="leave_type_id" class="col-xl-3 col-lg-3 col-md-3 col-form-label">Leave Type</label>
+                                <label for="leave_type_id" class="col-xl-3 col-lg-3 col-md-3 col-form-label">Leave
+                                    Type</label>
                                 <div class="col-xl-9 col-lg-9 col-md-9">
                                     <select class="form-control" id="leave_type_id" name="leave_type_id">
                                         <option selected disabled value="0">Select Leave Type</option>
@@ -76,10 +78,12 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="days_taken" class="col-xl-3 col-lg-3 col-md-3 col-form-label">Days Taken</label>
+                                <label for="days_taken" class="col-xl-3 col-lg-3 col-md-3 col-form-label">Days
+                                    Taken</label>
                                 <div class="col-xl-9 col-lg-9 col-md-9">
                                     <input class="form-control" type="text" id="days_taken" name="days_taken"
-                                        placeholder="Please select dates." readonly="readonly" value="{{ old('days_taken') }}">
+                                        placeholder="Please select dates." readonly="readonly"
+                                        value="{{ old('days_taken') }}">
                                 </div>
                             </div>
 
@@ -88,13 +92,13 @@
                                 <div class="col-xl-9 col-lg-9 col-md-9">
                                     <div id="check" class="form-control border-0">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="half_day" id="morning" value="1"
-                                                disabled>
+                                            <input class="form-check-input" type="radio" name="half_day" id="morning"
+                                                value="1" disabled>
                                             <label class="form-check-label" for="morning">Morning</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="half_day" id="evening" value="2"
-                                                disabled>
+                                            <input class="form-check-input" type="radio" name="half_day" id="evening"
+                                                value="2" disabled>
                                             <label class="form-check-label" for="evening">Evening</label>
                                         </div>
                                     </div>
@@ -114,10 +118,7 @@
                                 <label for="file" class="col-xl-3 col-lg-3 col-md-3 col-form-label">Attachment
                                     <small class="text-black-50">(optional)</small></label>
                                 <div class="col-xl-9 col-lg-9 col-md-9">
-                                    <div class="custom-file">
-                                        <input type="file" name="file" id="file" class="custom-file-input small">
-                                        <label class="custom-file-label" for="file">Choose file</label>
-                                    </div>
+                                    <input type="file" class="form-control-file" name="file" id="file">
                                 </div>
                             </div>
 

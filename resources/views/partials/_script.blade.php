@@ -29,16 +29,12 @@
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/adminlte/dist/js/adminlte.js') }}"></script>
 
-{{-- <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="{{ asset('assets/adminlte/dist/js/pages/dashboard.js') }}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{{ asset('assets/adminlte/dist/js/demo.js') }}"></script> --}}
-
 <!-- --------------------------------------------------------- -->
 
 <!-- Page level custom scripts -->
-<script src="{{asset('assets/vendor/custom_chart/overviewpie.js')}}"></script>
-<script src="{{asset('assets/vendor/custom_chart/individualpie.js')}}"></script>
+<script src="{{asset('assets/js/graph/overviewpie.js')}}"></script>
+<script src="{{asset('assets/js/graph/individualpie.js')}}"></script>
+<script src="{{asset('assets/js/graph/applicationpie.js')}}"></script>
 
 <!-- Masking -->
 <script src="{{asset('assets/vendor/masking/jquery.inputmask.js')}}"></script>
@@ -46,3 +42,5 @@
 
 <!-- Main script -->
 <script src="{{asset('assets/js/main.js')}}"></script>
+
+

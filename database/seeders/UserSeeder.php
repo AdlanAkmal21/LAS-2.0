@@ -17,17 +17,6 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        //Admin
-        DB::table('users')->insert([
-          'id' => 1,
-          'name' => 'Admin',
-          'email' => 'admin@igsprotech.com.my',
-          'role_id' => 1,
-          'emp_status_id' => 1,
-          'password' => Hash::make('igsprotech2020'),
-          'created_at' => Carbon::now(),
-          'updated_at' => Carbon::now(),
-        ]);
 
         //Employees
         DB::table('users')->insert([
