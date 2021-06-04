@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Exports\PeriodExport;
 use App\Models\LeaveApplication;
 use App\Models\User;
+use App\Models\UserLog;
 use App\Traits\AdminTrait;
 use App\Traits\UserTrait;
 use Carbon\Carbon;
 use Dompdf\Dompdf as Dompdf;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PrintController extends Controller
 {
@@ -66,6 +68,46 @@ class PrintController extends Controller
         $dompdf->render();
 
         $dompdf->stream("Application $application->id.pdf");
+    }
+
+    public function generate_user_log(Request $request)
+    {
+        $user_name = Auth::user()->name;
+
+        if($request->get('month') == '' && $request->get('year') == ''){
+            $user_logs = UserLog::where('user_id', Auth::id())->get();
+        } else{
+            $month = $request->get('month');
+            $year = $request->get('year');
+            $user_logs = UserLog::where('user_id', Auth::id())->whereYear('date', $year)->whereMonth('date', $month)->get();
+        }
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml(view('report.user_log.user_logs_pdf', compact('user_logs')));
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        $timestamp = Carbon::now();
+        $dompdf->stream("Work From Home-$user_name-$timestamp.pdf");
+    }
+
+    public function generate_user_log_admin(Request $request)
+    {
+        $user_name = Auth::user()->name;
+
+        if($request->get('month') == '' && $request->get('year') == ''){
+            $user_logs = UserLog::all();
+        } else{
+            $month = $request->get('month');
+            $year = $request->get('year');
+            $user_logs = UserLog::whereYear('date', $year)->whereMonth('date', $month)->get();
+        }
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml(view('report.user_log.user_logs_pdf_admin', compact('user_logs')));
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        $timestamp = Carbon::now();
+        $dompdf->stream("Work From Home-$user_name-$timestamp.pdf");
     }
 
 }

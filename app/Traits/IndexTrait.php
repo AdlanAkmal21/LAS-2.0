@@ -22,25 +22,27 @@ trait IndexTrait
         $start  = $today->startOfWeek(Carbon::SUNDAY);
         $end    = $today->endOfWeek(Carbon::SATURDAY);
 
-        $offduty = LeaveApplication::where('application_status_id', 2)
-            ->where(function ($query) use ($today) {
-                $query->whereDate('from', $today)
+        $offduty = LeaveApplication::where(function ($query) use ($today) {
+                $query->where('application_status_id', 2)
+                    ->whereDate('from', $today)
                     ->whereDate('to', $today);
             })
             ->orWhere(function ($query) use ($today) {
-                $query->whereDate('from', '<=', $today)
+                $query->where('application_status_id', 2)
+                    ->whereDate('from', '<=', $today)
                     ->whereDate('to', '>=', $today);
             })
             ->paginate(5);
 
         //Counts All Distinct Off-Duty Staffs.
-        $offduty_count = LeaveApplication::where('application_status_id', 2)
-            ->where(function ($query) use ($today) {
-                $query->whereDate('from', $today)
+        $offduty_count = LeaveApplication::where(function ($query) use ($today) {
+                $query->where('application_status_id', 2)
+                    ->whereDate('from', $today)
                     ->whereDate('to', $today);
             })
             ->orWhere(function ($query) use ($today) {
-                $query->whereDate('from', '<=', $today)
+                $query->where('application_status_id', 2)
+                    ->whereDate('from', '<=', $today)
                     ->whereDate('to', '>=', $today);
             })
             ->distinct('user_id')
@@ -97,7 +99,12 @@ trait IndexTrait
             }
         }
 
-        //Check Pendings & Leaves Taken So Far.
+    }
+
+    public function user_index() {
+        $today  = CarbonImmutable::today();
+
+        //Leaves Taken So Far.
         if (Auth::user()->role_id != 1 && Auth::user()->leavedetail) {
             //Yearly Carry-Over
             if (Carbon::now()->year > Auth::user()->userdetail->last_carry_over) {
@@ -112,20 +119,24 @@ trait IndexTrait
                 Auth::user()->userdetail->save();
             }
 
-            //Application Sum = Leaves Taken So Far.
-            $application_sum = LeaveApplication::where('application_status_id', 2)
-                ->whereYear('created_at', date('Y'))
-                ->where('from', '<=', $today)
-                ->where(function ($query) {
-                    $query->where('leave_type_id', 1)
-                        ->orWhere('leave_type_id', 3);
-                })
-                ->sum('days_taken');
-
-            $leavedetail = Auth::user()->leavedetail;
-            $leavedetail->taken_so_far      = $application_sum;
-            $leavedetail->balance_leaves    = $leavedetail->total_leaves - $application_sum;
-            $leavedetail->save();
         }
+
+        //Application Sum = Leaves Taken So Far.
+        $application_sum = LeaveApplication::where('user_id', Auth::id())
+        ->where('application_status_id', 2)
+            ->whereYear('created_at', date('Y'))
+            ->where('from', '<=', $today)
+            ->where(function ($query) {
+                $query->where('leave_type_id', 1)
+                    ->orWhere('leave_type_id', 3);
+            })
+            ->sum('days_taken');
+
+        $leavedetail = Auth::user()->leavedetail;
+        $leavedetail->taken_so_far      = $application_sum;
+        $leavedetail->balance_leaves    = $leavedetail->total_leaves - $application_sum;
+        $leavedetail->save();
     }
+
+
 }

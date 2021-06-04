@@ -62,23 +62,20 @@ trait UserTrait
      */
     public function clock_out_trait(UserLog $today)
     {
-        $today->clock_out = Carbon::now()->format('H:i:s');
-        $seconds = Carbon::parse($today->clock_in)->diffInSeconds(Carbon::parse($today->clock_out));
+        $now    = Carbon::now()->format('H:i:s');
+        $init   = Carbon::parse($today->clock_in)->diffInSeconds(Carbon::parse($now));
 
-        if($seconds < 60){
-                $today->period = $seconds.'s';
+        if($init < 60){
+            $today->period = $init.'s';
         }
         else {
-            $minutes = floor(($seconds / 60) % 60);
+            $hours = floor($init / 3600);
+            $minutes = floor(($init / 60) % 60);
 
-            if($minutes < 60){
-                $today->period = $minutes.'m';
-            }
-            else{
-                $hours = floor(($seconds / 3600)-1);
-                $today->period = $hours.'h '.$minutes.'m';
-            }
+            $today->period = $hours.'h '.$minutes.'m';
         }
+        $today->clock_out = $now;
         $today->save();
     }
+
 }

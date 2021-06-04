@@ -25,7 +25,7 @@
 
 <div class="container-fluid">
     @if (!$users->isEmpty())
-
+    <div class="container-fluid">
     <form class="d-flex align-items-center flex-nowrap mb-2" method="GET" action="{{route('admin.employee_search')}}">
         <input type="text" class="form-control mr-sm-2" name="search" placeholder="Search" aria-label="Search"
             value="@if(!empty($query)) {{$query}} @endif">
@@ -33,7 +33,7 @@
     </form>
 
     <div class="table-responsive-lg">
-        <table class="table table-sm table-bordered table-striped container">
+        <table class="table table-sm table-bordered table-striped">
             <thead class="table-dark">
                 <tr class="d-flex">
                     <th class="col-1">#</th>
@@ -79,6 +79,7 @@
         </table>
     </div>
     {{ $users->links() }}
+    </div>
     @else
     <div class="card">
         <div class="card-body text-center">

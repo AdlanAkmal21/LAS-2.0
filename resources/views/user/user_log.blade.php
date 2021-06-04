@@ -26,8 +26,16 @@
         <div class="card-body">
 
             <div class="container">
-                <h5 class="mb-0">{{Auth::user()->refRole->role_name}}</h5>
-                <h2 class="text-gray-800">{{Auth::user()->name}}</h2>
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6">
+                        <h5 class="mb-0">{{Auth::user()->refRole->role_name}}</h5>
+                        <h2 class="text-gray-800">{{Auth::user()->name}}</h2>
+                    </div>
+                    <div class="col-xl-6 col-lg-6">
+                        <a href="{{ route('attendance.logs_view') }}" class="btn btn-success float-xl-right float-lg-right">Generate PDF</a>
+                    </div>
+                </div>
+
             </div>
 
             <div class="row my-4">

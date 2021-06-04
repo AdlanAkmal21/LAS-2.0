@@ -23,6 +23,7 @@ class UserController extends Controller
     {
         $this->off_duty_index();
         $this->application_index();
+        $this->user_index();
 
         $dashboard_user_array = $this->dashboard_user(Auth::id());
 

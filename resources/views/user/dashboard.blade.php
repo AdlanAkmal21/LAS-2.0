@@ -31,7 +31,7 @@
                 <!-- small box -->
                 <div class="small-box bg-warning small">
                     <div class="inner">
-                        <h3 class="m-0">{{Auth::user()->leavedetail->taken_so_far}}</h3>
+                        <h3 class="m-0">{{ Auth::user()->leavedetail->taken_so_far }}</h3>
                         <p class="m-0">Leave Days Taken</p>
                         <p class="m-0">(This Year)</p>
                     </div>
@@ -47,7 +47,7 @@
                 <!-- small box -->
                 <div class="small-box bg-primary small">
                     <div class="inner">
-                        <h3 class="m-0">{{Auth::user()->leavedetail->balance_leaves}}</h3>
+                        <h3 class="m-0">{{ Auth::user()->leavedetail->balance_leaves }}</h3>
                         <p class="m-0">Available Leave</p>
                         <p class="m-0">(This Year)</p>
                     </div>

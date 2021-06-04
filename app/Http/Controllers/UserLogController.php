@@ -45,7 +45,9 @@ class UserLogController extends Controller
     public function clock_in()
     {
         if(UserLog::where('user_id', Auth::id())->whereDate('created_at', Carbon::today()->toDateString())->doesntExist()){
+
             $this->clock_in_trait();
+
             return redirect()->route('attendance.view')->with('success', 'You have clocked in.');
         }
         else {
@@ -71,84 +73,39 @@ class UserLogController extends Controller
         }
     }
 
-
-
-    //Resources
-
     /**
-     * Display a listing of the resource.
+     * Display listings of user logs.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function logs_view()
     {
-        //
+        $month = '';
+        $year = '';
+        $user_logs = UserLog::where('user_id', Auth::id())->get();
+
+        return view('report.user_log.user_logs', compact('user_logs', 'month', 'year'));
     }
 
-    /**
-     * Show the form for creating a new resource.
+        /**
+     * Display listings of user logs.
      *
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function logs_view_search(Request $request)
     {
-        //
-    }
+        if($request->get('date') == ''){
+            $month = '';
+            $year = '';
+            $user_logs = UserLog::where('user_id', Auth::id())->get();
+        } else{
+            $month = date('m', strtotime($request->get('date')));
+            $year = date('Y', strtotime($request->get('date')));
+            $user_logs = UserLog::where('user_id', Auth::id())->whereYear('date', $year)->whereMonth('date', $month)->get();
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\UserLog  $userLog
-     * @return \Illuminate\Http\Response
-     */
-    public function show(UserLog $userLog)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\UserLog  $userLog
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(UserLog $userLog)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\UserLog  $userLog
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, UserLog $userLog)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\UserLog  $userLog
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(UserLog $userLog)
-    {
-        //
+        return view('report.user_log.user_logs', compact('user_logs', 'month', 'year'));
     }
 
 }

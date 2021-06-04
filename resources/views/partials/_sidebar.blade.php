@@ -143,6 +143,25 @@
                         </li>
                     </ul>
                 </li>
+
+                <!-- Manage WFH (Admin) -->
+                <li class="nav-item has-treeview mb-1">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-laptop-house"></i>
+                        <p>
+                            Manage WFH
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.logs_view') }}" class="nav-link">
+                                <i class="fas fa-briefcase"></i>
+                                <p>User Logs</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 @endif
 
                 @if (Auth::user()->role_id == 2 || Auth::user()->role_id == 3)

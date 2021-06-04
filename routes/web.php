@@ -58,6 +58,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('application/list/{year}', [AdminController::class, 'application_list_ty'])->name('admin.application_list_ty');
             Route::get('application/list/user/{user_id}', [AdminController::class, 'application_list_employee'])->name('admin.application_list_employee');
             Route::get('application/{application}', [AdminController::class, 'application_show'])->name('admin.application_show');
+            Route::get('attendance/log', [AdminController::class, 'logs_view'])->name('admin.logs_view');
+            Route::post('attendance/log/search', [AdminController::class, 'logs_view_search'])->name('admin.logs_view_search');
 
             Route::get('report/overview', [ReportController::class, 'overview'])->name('report.overview');
             Route::get('report/individual', [ReportController::class, 'individual'])->name('report.individual');
@@ -71,6 +73,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('report/application/{period}/pdf', [PrintController::class, 'generate_period'])->name('print.period_pdf');
             Route::get('report/application/{period}/xlsx', [PrintController::class, 'generate_period_xlsx'])->name('print.period_xlsx');
             Route::get('application/{application}/pdf', [PrintController::class, 'generate_application_pdf'])->name('print.generate_application_pdf');
+            Route::post('userlog', [PrintController::class, 'generate_user_log_admin'])->name('print.generate_user_log_admin');
 
             Route::resource('file', FileController::class);
         });
@@ -91,8 +94,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('attendance', [UserLogController::class, 'attendance_view'])->name('attendance.view');
         Route::post('attendance/clock/in', [UserLogController::class, 'clock_in'])->name('attendance.clock_in');
         Route::post('attendance/clock/out', [UserLogController::class, 'clock_out'])->name('attendance.clock_out');
+        Route::get('attendance/log', [UserLogController::class, 'logs_view'])->name('attendance.logs_view');
+        Route::post('attendance/log/search', [UserLogController::class, 'logs_view_search'])->name('attendance.logs_view_search');
+
         Route::get('change-password', [ResetPasswordController::class, 'change_page'])->name('reset.view');
         Route::post('change-password', [ResetPasswordController::class, 'change'])->name('reset.change');
+        Route::post('userlog', [PrintController::class, 'generate_user_log'])->name('print.generate_user_log');
     });
     Route::get('application/list/{year}', [LeaveApplicationController::class, 'index_ty'])->name('application.index_ty');
 

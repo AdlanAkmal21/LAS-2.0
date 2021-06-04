@@ -7,7 +7,6 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 
-
 class LoginController extends Controller
 {
     /*
@@ -32,10 +31,10 @@ class LoginController extends Controller
 
     public function redirectTo()
     {
-      $role = Auth::user()->role_id;
+        $role = Auth::user()->role_id;
 
-      if(Auth::user()->emp_status_id != 2)
-      {
+        if(Auth::user()->emp_status_id != 2)
+        {
         switch ($role)
         {
             case 1:

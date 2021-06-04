@@ -15,6 +15,7 @@ use App\Models\RefRole;
 use App\Models\RefEmpStatus;
 use App\Models\RefGender;
 use App\Models\RefLeaveType;
+use App\Models\UserLog;
 use App\Traits\AdminTrait;
 use App\Traits\IndexTrait;
 use App\Traits\LeaveTrait;
@@ -319,5 +320,40 @@ class AdminController extends Controller
         }
 
         return view('admin.application.search_application', compact('applications', 'refLeaveTypes'));
+    }
+
+        /**
+     * Display listings of user logs.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function logs_view()
+    {
+        $month = '';
+        $year = '';
+        $user_logs = UserLog::all();
+
+        return view('report.user_log.user_logs_admin', compact('user_logs', 'month', 'year'));
+    }
+
+        /**
+     * Display listings of user logs.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logs_view_search(Request $request)
+    {
+        if($request->get('date') == ''){
+            $month = '';
+            $year = '';
+            $user_logs = UserLog::all();
+        } else{
+            $month = date('m', strtotime($request->get('date')));
+            $year = date('Y', strtotime($request->get('date')));
+            $user_logs = UserLog::whereYear('date', $year)->whereMonth('date', $month)->get();
+        }
+
+        return view('report.user_log.user_logs_admin', compact('user_logs', 'month', 'year'));
     }
 }
