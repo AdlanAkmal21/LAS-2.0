@@ -48,12 +48,31 @@ trait LeaveTrait
     }
 
     /**
+     * Re-calculate leave detail.
+     *
+     * @param  \App\Models\LeaveDetail $leave_detail
+    */
+    public function recalculate_leave_detail(LeaveDetail $leave_detail)
+    {
+        $application_sum_ty = LeaveApplication::where('leave_id', $leave_detail->id)
+                                            ->where('application_status_id', 2)
+                                            ->whereNotIn('leave_type_id', [2, 4])
+                                            ->whereYear('created_at', date('Y'))
+                                            ->sum('days_taken');
+
+        $leave_detail->total_leaves = $leave_detail->annual_e + $leave_detail->carry_over + $leave_detail->replacement_leaves + $leave_detail->special_leaves;
+        $leave_detail->taken_so_far = $application_sum_ty;
+        $leave_detail->balance_leaves = $leave_detail->total_leaves - $application_sum_ty;
+        $leave_detail->save();
+    }
+
+    /**
      * Store a newly created resource in storage (Annual Leave).
      *
      * @param array $all
      * @return \Illuminate\Http\Response
      */
-    public function annual_trait(array $all)
+    public function annual_replacement_special_trait(array $all)
     {
         $days_taken = $all['days_taken'];
 
@@ -63,7 +82,10 @@ trait LeaveTrait
         if ($half_day != null && $days_taken != 0.5) $days_taken -= (0.5);
 
         if ($days_taken <= Auth::user()->leavedetail->balance_leaves) {
-            $applications_temp     = LeaveApplication::where('user_id', Auth::id())->where('application_status_id', 1)->where('leave_type_id', 1)->sum('days_taken');
+            $applications_temp     = LeaveApplication::where('user_id', Auth::id())
+                                        ->where('application_status_id', 1)
+                                        ->sum('days_taken');
+
             $applications_temp_sum = $applications_temp + $days_taken;
 
             if ($applications_temp_sum <= Auth::user()->leavedetail->balance_leaves) {
@@ -87,8 +109,8 @@ trait LeaveTrait
                     $application->reason        = $reason;
                     $application->save();
 
-                    Mail::to($application->user->userdetail->approver->email)->send(new NewApplicationMail($application->id));
-                    $application->user->userdetail->approver->notify(new NewApplicationAlert($application));
+                    // Mail::to($application->user->userdetail->approver->email)->send(new NewApplicationMail($application->id));
+                    // $application->user->userdetail->approver->notify(new NewApplicationAlert($application));
                     if (isset($all['file'])) $this->file_upload($application, $all);
 
                     return redirect()->route('application.index')->with('success', 'Application submitted.')->send();
@@ -107,7 +129,7 @@ trait LeaveTrait
      * @param  \App\Models\LeaveApplication  $leaveApplication
      * @return \Illuminate\Http\Response
      */
-    public function annual_edit_trait(array $all, LeaveApplication $application)
+    public function annual_replacement_special_edit_trait(array $all, LeaveApplication $application)
     {
         $from          = Carbon::parse($all['from']);
         $days_taken    = $all['days_taken'];
@@ -176,8 +198,8 @@ trait LeaveTrait
 
             $application->save();
 
-            Mail::to($application->user->userdetail->approver->email)->send(new NewApplicationMail($application->id));
-            $application->user->userdetail->approver->notify(new NewApplicationAlert($application));
+            // Mail::to($application->user->userdetail->approver->email)->send(new NewApplicationMail($application->id));
+            // $application->user->userdetail->approver->notify(new NewApplicationAlert($application));
             if (isset($all['file'])) $this->file_upload($application, $all);
 
             return redirect()->route('application.index')->with('success', 'Application submitted.')->send();
@@ -211,7 +233,12 @@ trait LeaveTrait
                     ? $filecategory = 'Medical_Leave_Files'
                     : (($application->leave_type_id == 3)
                         ? $filecategory = 'Emergency_Leave_Files'
-                        : $filecategory = 'Unrecorded_Leave_Files'));
+                        : (($application->leave_type_id == 4)
+                            ? $filecategory = 'Unrecorded_Leave_Files'
+                            : (($application->leave_type_id == 5)
+                                ?  $filecategory = 'Replacement_Leave_Files'
+                                : $filecategory = 'Special_Leave_Files'
+                            ))));
 
             $new_file->filecategory = $filecategory;
             $new_file->save();

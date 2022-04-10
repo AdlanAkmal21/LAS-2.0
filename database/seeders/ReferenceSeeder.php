@@ -99,6 +99,16 @@ class ReferenceSeeder extends Seeder
           'leave_type_name' => 'Unrecorded Leave',
           'created_at' => Carbon::now(),
           'updated_at' => Carbon::now(),
+          ],
+          ['id' => 5,
+          'leave_type_name' => 'Replacement Leave',
+          'created_at' => Carbon::now(),
+          'updated_at' => Carbon::now(),
+          ],
+          ['id' => 6,
+          'leave_type_name' => 'Special Leave',
+          'created_at' => Carbon::now(),
+          'updated_at' => Carbon::now(),
           ]
         ]);
 

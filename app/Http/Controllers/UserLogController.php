@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OfficeLog;
 use App\Models\UserLog;
 use App\Traits\UserTrait;
 use Carbon\Carbon;
@@ -18,7 +19,7 @@ class UserLogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function attendance_view()
+    public function index()
     {
         //WFH Auto-Clock-Out
         DB::table('user_logs')
@@ -34,7 +35,7 @@ class UserLogController extends Controller
                     ->orderBy('date','DESC')
                     ->paginate(5);
 
-        return view('user.user_log', compact('today','all_logs'));
+        return view('user.user_log.user_log_index', compact('today','all_logs'));
     }
 
     /**
@@ -48,10 +49,10 @@ class UserLogController extends Controller
 
             $this->clock_in_trait();
 
-            return redirect()->route('attendance.view')->with('success', 'You have clocked in.');
+            return redirect()->route('user_log.index')->with('success', 'You have clocked in.');
         }
         else {
-            return redirect()->route('attendance.view')->with('error', 'You have already clocked in today!');
+            return redirect()->route('user_log.index')->with('error', 'You have already clocked in today!');
         }
     }
 
@@ -66,10 +67,10 @@ class UserLogController extends Controller
 
             $this->clock_out_trait($today);
 
-            return redirect()->route('attendance.view')->with('success', 'You have clocked out!');
+            return redirect()->route('user_log.index')->with('success', 'You have clocked out!');
         }
         else {
-            return redirect()->route('attendance.view')->with('error', 'You have not clocked in today.');
+            return redirect()->route('user_log.index')->with('error', 'You have not clocked in today.');
         }
     }
 
@@ -78,13 +79,14 @@ class UserLogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function logs_view()
+    public function user_log_index()
     {
+        $date = '';
         $month = '';
         $year = '';
         $user_logs = UserLog::where('user_id', Auth::id())->get();
 
-        return view('report.user_log.user_logs', compact('user_logs', 'month', 'year'));
+        return view('user.user_log.user_log_search', compact('user_logs', 'month', 'year', 'date'));
     }
 
         /**
@@ -93,9 +95,11 @@ class UserLogController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function logs_view_search(Request $request)
+    public function user_log_search(Request $request)
     {
-        if($request->get('date') == ''){
+        $date = $request->get('date');
+
+        if($date == ''){
             $month = '';
             $year = '';
             $user_logs = UserLog::where('user_id', Auth::id())->get();
@@ -105,7 +109,43 @@ class UserLogController extends Controller
             $user_logs = UserLog::where('user_id', Auth::id())->whereYear('date', $year)->whereMonth('date', $month)->get();
         }
 
-        return view('report.user_log.user_logs', compact('user_logs', 'month', 'year'));
+        return view('user.user_log.user_log_search', compact('user_logs', 'month', 'year', 'date'));
     }
 
+
+
+    /**
+     * Display listings of user logs (Admin).
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function admin_user_log_index()
+    {
+        $month = '';
+        $year = '';
+        $user_logs = UserLog::all();
+
+        return view('admin.user_log.user_log_index', compact('user_logs', 'month', 'year'));
+    }
+
+    /**
+     * Search listings of user logs (Admin).
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function admin_user_log_search(Request $request)
+    {
+        if($request->get('date') == ''){
+            $month = '';
+            $year = '';
+            $user_logs = UserLog::all();
+        } else{
+            $month = date('m', strtotime($request->get('date')));
+            $year = date('Y', strtotime($request->get('date')));
+            $user_logs = UserLog::whereYear('date', $year)->whereMonth('date', $month)->get();
+        }
+
+        return view('admin.user_log.user_log_index', compact('user_logs', 'month', 'year'));
+    }
 }

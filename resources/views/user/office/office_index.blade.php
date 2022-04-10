@@ -6,12 +6,12 @@
     <div class="container-fluid">
         <div class="row mt-3">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Work From Home</h1>
+                <h1 class="m-0 text-dark">Office</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{ route('user.index') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Work From Home</li>
+                    <li class="breadcrumb-item active">Office</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -32,7 +32,7 @@
                         <h2 class="text-gray-800">{{Auth::user()->name}}</h2>
                     </div>
                     <div class="col-xl-6 col-lg-6">
-                        <a href="{{ route('attendance.logs_view') }}" class="btn btn-success float-xl-right float-lg-right">Generate PDF</a>
+                        <a href="{{ route('office.office_logs') }}" class="btn btn-success float-xl-right float-lg-right">Generate PDF</a>
                     </div>
                 </div>
 
@@ -54,7 +54,7 @@
                             value="{{date('h:i:s A', strtotime($today->clock_in))}}" @endif>
                         </div>
                         <div class="col-xl-6">
-                            <form action="{{ route('attendance.clock_in') }}" method="post">
+                            <form action="{{ route('office.clock_in') }}" method="post">
                                 @csrf
                                 <input class="btn btn-primary btn-block active" type="submit" value="Clock In">
                             </form>
@@ -68,7 +68,7 @@
                             value="{{date('h:i:s A', strtotime($today->clock_out))}}" @endif>
                         </div>
                         <div class="col-xl-6">
-                            <form action="{{ route('attendance.clock_out') }}" method="post">
+                            <form action="{{ route('office.clock_out') }}" method="post">
                                 @csrf
                                 <input class="btn btn-primary btn-block active" type="submit" value="Clock Out">
                             </form>

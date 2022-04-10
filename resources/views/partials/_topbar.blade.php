@@ -9,6 +9,13 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+        @if (Auth::user()->role_id == 1)
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.activity_log') }}">
+                <i class="fas fa-clipboard-list"></i>
+            </a>
+        </li>
+        @endif
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">

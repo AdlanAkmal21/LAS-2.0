@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use App\Models\LeaveApplication;
 use App\Models\User;
 use App\Traits\ApproverTrait;
+use App\Traits\LeaveTrait;
 use Illuminate\Support\Facades\Auth;
 
 class ApproverController extends Controller
 {
     use ApproverTrait;
+    use LeaveTrait;
 
     /**
      * Display a listing of the pending applications (approver).
@@ -71,7 +73,15 @@ class ApproverController extends Controller
      */
     public function approve(LeaveApplication $application)
     {
-        $this->approve_trait($application);
+        $application->application_status_id    = 2;
+        $application->approval_date            = Carbon::now();
+        $application->save();
+
+        //Re-calculate Applicant's Leave Detail.
+        $this->recalculate_leave_detail($application->leavedetail);
+
+        Mail::to($application->user->email)->send(new ApproverMail($application->id));
+        $application->user->notify(new ApproverAlert($application));
 
         return redirect()->route('approver.approver_list')->with('success', 'Application approved.');
     }
@@ -84,7 +94,15 @@ class ApproverController extends Controller
      */
     public function reject(LeaveApplication $application)
     {
-        $this->reject_trait($application);
+        $application->application_status_id = 3;
+        $application->approval_date         = Carbon::now();
+        $application->save();
+
+        //Re-calculate Applicant's Leave Detail.
+        $this->recalculate_leave_detail($application->leavedetail);
+
+        Mail::to($application->user->email)->send(new ApproverMail($application->id));
+        $application->user->notify(new ApproverAlert($application));
 
         return redirect()->route('approver.approver_list')->with('error', 'Application rejected.');
     }

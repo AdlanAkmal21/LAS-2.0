@@ -126,3 +126,7 @@
 </div>
 
 @endsection
+
+@push('scripts')
+{{-- <script src="{{asset('assets/js/graph/applicationpie.js')}}"></script> --}}
+@endpush

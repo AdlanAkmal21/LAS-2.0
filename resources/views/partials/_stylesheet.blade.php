@@ -33,3 +33,6 @@
 <link rel="icon" type="image/png" sizes="32x32" href="{{asset('assets/ico/favicon-32x32.png')}}">
 <link rel="icon" type="image/png" sizes="16x16" href="{{asset('assets/ico/favicon-16x16.png')}}">
 <link rel="manifest" href="{{asset('assets/ico/site.webmanifest')}}">
+
+<!-- Calendar.IO -->
+<link href='{{asset('assets/css/fullcalendar/main.css')}}' rel='stylesheet' />

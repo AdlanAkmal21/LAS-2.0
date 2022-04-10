@@ -269,6 +269,17 @@ class UserDetailSeeder extends Seeder
                 'last_carry_over' => Carbon::now()->year,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
+            ],
+            [//24 'name' => 'Adlan Akmal',
+                'user_id' => 25,
+                'approver_id' =>  4,
+                'ic' =>  '980321-07-5625',
+                'gender_id' =>  1,
+                'phoneNum' =>  '+(60)11 1443-0321',
+                'date_joined' => Carbon::create('2020','11','15'),
+                'last_carry_over' => Carbon::now()->year,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]
         ]);
     }

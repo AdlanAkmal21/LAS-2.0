@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\PeriodExport;
 use App\Models\LeaveApplication;
+use App\Models\OfficeLog;
 use App\Models\User;
 use App\Models\UserLog;
 use App\Traits\AdminTrait;
@@ -110,4 +111,43 @@ class PrintController extends Controller
         $dompdf->stream("Work From Home-$user_name-$timestamp.pdf");
     }
 
+    public function generate_office_log(Request $request)
+    {
+        $user_name = Auth::user()->name;
+
+        if($request->get('month') == '' && $request->get('year') == ''){
+            $office_logs = OfficeLog::where('user_id', Auth::id())->get();
+        } else{
+            $month = $request->get('month');
+            $year = $request->get('year');
+            $office_logs = OfficeLog::where('user_id', Auth::id())->whereYear('date', $year)->whereMonth('date', $month)->get();
+        }
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml(view('report.office.office_logs_pdf', compact('office_logs')));
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        $timestamp = Carbon::now();
+        $dompdf->stream("Office Log-$user_name-$timestamp.pdf");
+    }
+
+    public function generate_office_log_admin(Request $request)
+    {
+        $user_name = Auth::user()->name;
+        $month = $request->get('month');
+        $year = $request->get('year');
+
+        if($month == '' && $year == ''){
+            $office_logs = OfficeLog::all();
+        } else{
+            $office_logs = OfficeLog::whereYear('date', $year)->whereMonth('date', $month)->get();
+        }
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml(view('report.office.office_logs_pdf_admin', compact('office_logs')));
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        $timestamp = Carbon::now();
+        $dompdf->stream("Office Log-$user_name-$timestamp.pdf");
+    }
 }

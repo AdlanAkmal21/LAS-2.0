@@ -3,6 +3,8 @@
 <!-- jQuery UI 1.11.4 -->
 <script src="{{ asset('assets/adminlte/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
@@ -39,6 +41,9 @@
 <!-- Masking -->
 <script src="{{asset('assets/vendor/masking/jquery.inputmask.js')}}"></script>
 <script src="{{asset('assets/vendor/masking/bindings/inputmask.binding.js')}}"></script>
+
+<!-- Calendar.IO -->
+<script src='{{asset('assets/js/fullcalendar/main.js')}}'></script>
 
 <!-- Main script -->
 <script src="{{asset('assets/js/main.js')}}"></script>

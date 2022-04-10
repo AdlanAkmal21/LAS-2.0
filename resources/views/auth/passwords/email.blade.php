@@ -1,58 +1,71 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Forgot Page</title>
-    @include('partials._stylesheet')
-</head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="{{ asset('assets/login/fonts/icomoon/style.css') }}">
 
-<body class="bg-gradient-primary">
+    <link rel="stylesheet" href="{{ asset('assets/login/css/owl.carousel.min.css') }}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/login/css/bootstrap.min.css') }}">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="{{ asset('assets/login/css/style.css') }}">
+
+    <title>Forgot Password - Leave Application System (LAS)</title>
+  </head>
+  <body>
+
+  <div class="content">
     <div class="container">
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-            <div class="col-10">
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-header text-dark">{{ __('Reset Password') }}</div>
-                    <div class="card-body">
-                        @include('partials._validation')
-                        @include('partials._notifications')
-
-                        @if (!(Session::has('message')))
-                        <form method="POST" action="{{ route('forgot.post_email') }}">
-                            @csrf
-
-                            <div class="form-group row">
-                                <div class="col">
-                                    <div class="form-row">
-                                        <label for="email" class="text-dark col-sm-2">Email:</label>
-                                        <input id="email" type="email" placeholder="Enter your email for password reset." class="form-control col-sm-10" name="email"
-                                            value="{{ old('email') }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row mb-0">
-                                <div class="col">
-                                    <button type="submit" class="btn btn-primary btn-block">
-                                        {{ __('Send Email') }}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                        @endif
-
-                    </div>
-                </div>
-            </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="{{ asset('assets/login/images/undraw_remotely_-2-j6y.svg') }}" alt="Image" class="img-fluid">
         </div>
-    </div>
-    @include('partials._script')
-</body>
+        <div class="col-md-6 contents">
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+            <div class="my-4">
+              {{-- <h3>Sign In</h3> --}}
+              <h3>Leave Application System</h3>
+              {{-- <p class="mb-4">Leave Application System</p> --}}
+              <p class="mb-4">Forgot Password</p>
+                @include('partials._notifications')
+                @include('partials._validation')
+            </div>
 
+            @if (!(Session::has('message')))
+
+            <form method="POST" action="{{ route('forgot.post_email') }}">
+                @csrf
+              <div class="form-group mb-4 ">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
+              </div>
+
+              <input type="submit" value="Send Email" class="btn btn-block btn-primary">
+
+            </form>
+
+            @endif
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+    <script src="{{ asset('assets/login/js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ asset('assets/login/js/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/login/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/login/js/main.js') }}"></script>
+  </body>
 </html>

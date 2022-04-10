@@ -519,3 +519,7 @@
 
 
 @endsection
+
+@push('scripts')
+{{-- <script src="{{asset('assets/js/graph/overviewpie.js')}}"></script> --}}
+@endpush

@@ -7,6 +7,8 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\LeaveManagementController;
+use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
@@ -58,8 +60,12 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('application/list/{year}', [AdminController::class, 'application_list_ty'])->name('admin.application_list_ty');
             Route::get('application/list/user/{user_id}', [AdminController::class, 'application_list_employee'])->name('admin.application_list_employee');
             Route::get('application/{application}', [AdminController::class, 'application_show'])->name('admin.application_show');
-            Route::get('attendance/log', [AdminController::class, 'logs_view'])->name('admin.logs_view');
-            Route::post('attendance/log/search', [AdminController::class, 'logs_view_search'])->name('admin.logs_view_search');
+
+            Route::get('wfh/attendance', [UserLogController::class, 'admin_user_log_index'])->name('admin.admin_user_log_index');
+            Route::post('wfh/attendance', [UserLogController::class, 'admin_user_log_search'])->name('admin.admin_user_log_search');
+
+            Route::get('office/attendance', [OfficeController::class, 'admin_office_index'])->name('admin.admin_office_index');
+            Route::post('office/attendance', [OfficeController::class, 'admin_office_search'])->name('admin.admin_office_search');
 
             Route::get('report/overview', [ReportController::class, 'overview'])->name('report.overview');
             Route::get('report/individual', [ReportController::class, 'individual'])->name('report.individual');
@@ -74,8 +80,16 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('report/application/{period}/xlsx', [PrintController::class, 'generate_period_xlsx'])->name('print.period_xlsx');
             Route::get('application/{application}/pdf', [PrintController::class, 'generate_application_pdf'])->name('print.generate_application_pdf');
             Route::post('userlog', [PrintController::class, 'generate_user_log_admin'])->name('print.generate_user_log_admin');
+            Route::post('office_log', [PrintController::class, 'generate_office_log_admin'])->name('print.generate_office_log_admin');
 
             Route::resource('file', FileController::class);
+
+            Route::get('leave_management', [LeaveManagementController::class, 'index'])->name('leave_management.index');
+            Route::post('leave_management', [LeaveManagementController::class, 'store'])->name('leave_management.store');
+            Route::get('leave_management/{leave_detail}', [LeaveManagementController::class, 'edit'])->name('leave_management.edit');
+            Route::post('leave_management/{leave_detail}', [LeaveManagementController::class, 'update'])->name('leave_management.update');
+
+            Route::get('activity_log', [AdminController::class, 'activity_log'])->name('admin.activity_log');
         });
 
         Route::get('application/search', [AdminController::class, 'search_application'])->name('admin.search_application');
@@ -91,15 +105,24 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('notifications/read', [UserController::class, 'read_notifications'])->name('user.read_notifications');
         Route::get('notifications/view', [UserController::class, 'view_notifications'])->name('user.view_notifications');
         Route::post('notifications/clear', [UserController::class, 'clear_notifications'])->name('user.clear_notifications');
-        Route::get('attendance', [UserLogController::class, 'attendance_view'])->name('attendance.view');
-        Route::post('attendance/clock/in', [UserLogController::class, 'clock_in'])->name('attendance.clock_in');
-        Route::post('attendance/clock/out', [UserLogController::class, 'clock_out'])->name('attendance.clock_out');
-        Route::get('attendance/log', [UserLogController::class, 'logs_view'])->name('attendance.logs_view');
-        Route::post('attendance/log/search', [UserLogController::class, 'logs_view_search'])->name('attendance.logs_view_search');
+
+        Route::get('wfh/attendance', [UserLogController::class, 'index'])->name('user_log.index');
+        Route::post('wfh/attendance/in', [UserLogController::class, 'clock_in'])->name('user_log.clock_in');
+        Route::post('wfh/attendance/out', [UserLogController::class, 'clock_out'])->name('user_log.clock_out');
+        Route::get('wfh/log', [UserLogController::class, 'user_log_index'])->name('user_log.user_log_index');
+        Route::post('wfh/log', [UserLogController::class, 'user_log_search'])->name('user_log.user_log_search');
+
+        Route::get('office/attendance', [OfficeController::class, 'index'])->name('office.index');
+        Route::post('office/attendance/in', [OfficeController::class, 'clock_in'])->name('office.clock_in');
+        Route::post('office/attendance/out', [OfficeController::class, 'clock_out'])->name('office.clock_out');
+        Route::get('office/attendance/log', [OfficeController::class, 'office_logs'])->name('office.office_logs');
+        Route::post('office/attendance/log', [OfficeController::class, 'office_logs_search'])->name('office.office_logs_search');
+
 
         Route::get('change-password', [ResetPasswordController::class, 'change_page'])->name('reset.view');
         Route::post('change-password', [ResetPasswordController::class, 'change'])->name('reset.change');
         Route::post('userlog', [PrintController::class, 'generate_user_log'])->name('print.generate_user_log');
+        Route::post('office_log', [PrintController::class, 'generate_office_log'])->name('print.generate_office_log');
     });
     Route::get('application/list/{year}', [LeaveApplicationController::class, 'index_ty'])->name('application.index_ty');
 

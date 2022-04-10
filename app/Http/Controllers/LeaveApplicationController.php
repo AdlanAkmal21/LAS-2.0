@@ -28,10 +28,10 @@ class LeaveApplicationController extends Controller
     public function index()
     {
         $title      = '(Overall)';
-        $alls       = LeaveApplication::where('user_id', Auth::id())->paginate(10, ['*'], 'alls');
-        $pendings   = LeaveApplication::where('user_id', Auth::id())->where('application_status_id', 1)->paginate(10, ['*'], 'pendings');
-        $approveds  = LeaveApplication::where('user_id', Auth::id())->where('application_status_id', 2)->paginate(10, ['*'], 'approveds');
-        $rejecteds  = LeaveApplication::where('user_id', Auth::id())->where('application_status_id', 3)->paginate(10, ['*'], 'rejecteds');
+        $alls       = LeaveApplication::where('user_id', Auth::id())->orderBy('created_at', 'desc')->paginate(10, ['*'], 'alls');
+        $pendings   = LeaveApplication::where('user_id', Auth::id())->where('application_status_id', 1)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'pendings');
+        $approveds  = LeaveApplication::where('user_id', Auth::id())->where('application_status_id', 2)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'approveds');
+        $rejecteds  = LeaveApplication::where('user_id', Auth::id())->where('application_status_id', 3)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'rejecteds');
 
         return view('application.application_list', compact('title', 'alls', 'pendings', 'approveds', 'rejecteds'));
     }
@@ -45,10 +45,10 @@ class LeaveApplicationController extends Controller
     public function index_ty(int $year)
     {
         $title      = '(This Year)';
-        $alls       = LeaveApplication::where('user_id', Auth::id())->whereYear('created_at', $year)->paginate(10, ['*'], 'alls');
-        $pendings   = LeaveApplication::where('user_id', Auth::id())->whereYear('created_at', $year)->where('application_status_id', 1)->paginate(10, ['*'], 'pendings');
-        $approveds  = LeaveApplication::where('user_id', Auth::id())->whereYear('created_at', $year)->where('application_status_id', 2)->paginate(10, ['*'], 'approveds');
-        $rejecteds  = LeaveApplication::where('user_id', Auth::id())->whereYear('created_at', $year)->where('application_status_id', 3)->paginate(10, ['*'], 'rejecteds');
+        $alls       = LeaveApplication::where('user_id', Auth::id())->whereYear('created_at', $year)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'alls');
+        $pendings   = LeaveApplication::where('user_id', Auth::id())->whereYear('created_at', $year)->where('application_status_id', 1)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'pendings');
+        $approveds  = LeaveApplication::where('user_id', Auth::id())->whereYear('created_at', $year)->where('application_status_id', 2)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'approveds');
+        $rejecteds  = LeaveApplication::where('user_id', Auth::id())->whereYear('created_at', $year)->where('application_status_id', 3)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'rejecteds');
 
         return view('application.application_list', compact('title', 'alls', 'pendings', 'approveds', 'rejecteds'));
     }
@@ -78,13 +78,14 @@ class LeaveApplicationController extends Controller
     {
         $all = $request->all();
 
-        //Annual
-        if ($all['leave_type_id'] == 1) {
-            $this->annual_trait($all);
+            //Annual or Replacement or Special
+        if ($all['leave_type_id'] == 1 || $all['leave_type_id'] == 5 || $all['leave_type_id'] == 6) {
+            $this->annual_replacement_special_trait($all);
         } else {
             //Medical or Emergency or Unrecorded
             $this->medical_emergency_unrecorded_trait($all);
         }
+
     }
 
     /**
@@ -124,7 +125,7 @@ class LeaveApplicationController extends Controller
     {
         $all = $request->all();
 
-        $this->annual_edit_trait($all, $application);
+        $this->annual_replacement_special_edit_trait($all, $application);
     }
 
     /**
@@ -140,12 +141,8 @@ class LeaveApplicationController extends Controller
             $file->delete();
         }
 
-        //If approved annual leave or emergency, reimburse days taken.
-        if (($application->leave_type_id == 1 || $application->leave_type_id == 3) && $application->application_status_id == 2) {
-            $application->leavedetail->balance_leaves = ($application->leavedetail->balance_leaves) + ($application->days_taken);
-            $application->leavedetail->taken_so_far  -= $application->days_taken;
-            $application->leavedetail->save();
-        }
+        //Re-calculate Applicant's Leave Detail.
+        $this->recalculate_leave_detail($application->leavedetail);
 
         $application->delete();
 

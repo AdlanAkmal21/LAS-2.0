@@ -67,7 +67,7 @@
                     <label class="col-sm-4 col-form-label" for="approver_id">Approved By</label>
                     <div class="col-sm-8">
                         <input class="form-control text-sm-center" type="text" id="approver_id" disabled
-                            value="{{ ($user->userdetail->approver_id == null) ? 'None' : $user->userdetail->approver->name }}">
+                            value="{{ $user->userdetail->approver->name ?? 'None' }}">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -107,6 +107,20 @@
                     <div class="col-sm-6">
                         <input type="text" class="form-control  text-center" id="carry_over" disabled
                             value="{{$user->leavedetail->carry_over}}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-6 col-form-label" for="replacement_leaves">Replacement Leaves (Current Year)</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control  text-center" id="replacement_leaves" disabled
+                            value="{{$user->leavedetail->replacement_leaves}}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-6 col-form-label" for="special_leaves">Special Leaves (Current Year)</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control  text-center" id="special_leaves" disabled
+                            value="{{$user->leavedetail->special_leaves}}">
                     </div>
                 </div>
                 <div class="form-group row">

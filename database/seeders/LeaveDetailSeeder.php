@@ -226,6 +226,16 @@ class LeaveDetailSeeder extends Seeder
                 'balance_leaves' => 2,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
+            ],
+            [   //Adlan Akmal
+                'user_id' => 25,
+                'annual_e' => 14,
+                'carry_over' => 0,
+                'total_leaves' => 14,
+                'taken_so_far' => 0,
+                'balance_leaves' => 14,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ]
           ]);
 

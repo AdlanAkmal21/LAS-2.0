@@ -136,31 +136,43 @@
 
                         <div class="form-group">
                             <label for="annual_e">Annual Entitlement</label>
-                            <input type="text" class="form-control" id="annual_e" disabled
+                            <input type="text" class="form-control form-control-sm" id="annual_e" disabled
                                 value="{{ Auth::user()->leavedetail->annual_e }}">
                         </div>
 
                         <div class="form-group">
                             <label for="carry_over">Carry Over</label>
-                            <input type="text" class="form-control" id="carry_over" disabled
+                            <input type="text" class="form-control form-control-sm" id="carry_over" disabled
                                 value="{{ Auth::user()->leavedetail->carry_over }}">
                         </div>
 
                         <div class="form-group">
+                            <label for="replacement_leaves">Replacement Leaves</label>
+                            <input type="text" class="form-control form-control-sm" id="replacement_leaves" disabled
+                                value="{{ Auth::user()->leavedetail->replacement_leaves }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="special_leaves">Special Leaves</label>
+                            <input type="text" class="form-control form-control-sm" id="special_leaves" disabled
+                                value="{{ Auth::user()->leavedetail->special_leaves }}">
+                        </div>
+
+                        <div class="form-group">
                             <label for="total_leaves">Total Leaves</label>
-                            <input type="text" class="form-control" id="total_leaves" disabled
+                            <input type="text" class="form-control form-control-sm" id="total_leaves" disabled
                                 value="{{ Auth::user()->leavedetail->total_leaves }}">
                         </div>
 
                         <div class="form-group">
                             <label for="taken_so_far">Leave Taken (This Year)</label>
-                            <input type="text" class="form-control" id="taken_so_far" disabled
+                            <input type="text" class="form-control form-control-sm" id="taken_so_far" disabled
                                 value="{{ Auth::user()->leavedetail->taken_so_far }}">
                         </div>
                         <hr>
                         <div class="form-group">
                             <label for="balance_leaves"><b>Balance Leaves</b></label>
-                            <input type="text" class="form-control" id="balance_leaves" disabled
+                            <input type="text" class="form-control form-control-sm" id="balance_leaves" disabled
                                 value="{{ Auth::user()->leavedetail->balance_leaves }}">
                         </div>
 

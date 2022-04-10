@@ -22,10 +22,12 @@ class UserController extends Controller
     public function index()
     {
         $this->off_duty_index();
-        $this->application_index();
+        $this->check_application_index();
         $this->user_index();
 
         $dashboard_user_array = $this->dashboard_user(Auth::id());
+
+        // dd($dashboard_user_array);
 
         (Auth::user()->role_id == 3)
             ? $dashboard_pendings = $this->dashboard_pendings(Auth::id())
@@ -45,6 +47,7 @@ class UserController extends Controller
         $this->check_approver($id);
         $user   = User::find($id);
 
+        // dd($user->approver);
         return view('user.employee_detail', compact('user'));
     }
 

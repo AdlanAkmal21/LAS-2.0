@@ -93,7 +93,7 @@
                                                 <a href="{{ route('admin.application_show', $all->id) }}"
                                                     class="dropdown-item text-secondary">Show</a>
                                                 <a href="{{ route('admin.application_list_employee', $all->user->id) }}"
-                                                    class="dropdown-item text-info">Applications by Employee</a>
+                                                    class="dropdown-item text-info">Applications</a>
                                             </div>
                                         </div>
                                     </td>
@@ -148,7 +148,7 @@
                                                 <a href="{{ route('admin.application_show', $pending->id) }}"
                                                     class="dropdown-item text-secondary">Show</a>
                                                 <a href="{{ route('admin.application_list_employee', $pending->user->id) }}"
-                                                    class="dropdown-item text-info">Applications by Employee</a>
+                                                    class="dropdown-item text-info">Applications</a>
                                             </div>
                                         </div>
                                     </td>
@@ -201,7 +201,7 @@
                                                 <a href="{{ route('admin.application_show', $approved->id) }}"
                                                     class="dropdown-item text-secondary">Show</a>
                                                 <a href="{{ route('admin.application_list_employee', $approved->user->id) }}"
-                                                    class="dropdown-item text-info">Applications by Employee</a>
+                                                    class="dropdown-item text-info">Applications</a>
                                             </div>
                                         </div>
                                     </td>
@@ -254,7 +254,7 @@
                                                 <a href="{{ route('admin.application_show', $rejected->id) }}"
                                                     class="dropdown-item text-secondary">Show</a>
                                                 <a href="{{ route('admin.application_list_employee', $rejected->user->id) }}"
-                                                    class="dropdown-item text-info">Applications by Employee</a>
+                                                    class="dropdown-item text-info">Applications</a>
                                             </div>
                                         </div>
                                     </td>

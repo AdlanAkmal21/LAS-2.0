@@ -249,6 +249,16 @@ class UserSeeder extends Seeder
                 'emp_status_id' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
+            ],
+            [//24
+                'id' => 25,
+                'name' => 'Adlan Akmal',
+                'email' => 'adlan@igsprotech.com.my',
+                'password' => Hash::make('igsprotech2020'),
+                'role_id' => 2,
+                'emp_status_id' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]
         ]);
     }

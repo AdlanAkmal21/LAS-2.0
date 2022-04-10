@@ -257,7 +257,8 @@
     @endif
 </div>
 
-
-
-
 @endsection
+
+@push('scripts')
+{{-- <script src="{{asset('assets/js/graph/individualpie.js')}}"></script> --}}
+@endpush

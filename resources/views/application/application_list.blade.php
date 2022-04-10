@@ -60,6 +60,7 @@
                             <th>Leave Type</th>
                             <th>From</th>
                             <th>To</th>
+                            <th>Days Taken</th>
                             <th>Applied At</th>
                             <th>Status</th>
 
@@ -73,6 +74,7 @@
                             <td>{{ $all->refLeaveType->leave_type_name }}</td>
                             <td>{{ $all->from }}</td>
                             <td>{{ $all->to }}</td>
+                            <td>{{ $all->days_taken }}</td>
                             <td>{{ $all->created_at }}</td>
                             <td
                                 class="{{ ($all->application_status_id == 2)?'text-success':(($all->application_status_id == 3)?'text-danger':'text-info') }}">
@@ -84,29 +86,33 @@
                                     <div class="dropdown-menu">
                                         <a href="{{ route('application.show', $all->id)}}"
                                             class="dropdown-item">Show</a>
-                                        @if ($all->application_status_id == 1 && $all->leave_type_id == 1)
+                                        @if ($all->application_status_id == 1 && ($all->leave_type_id == 1 || $all->leave_type_id == 5 || $all->leave_type_id == 6))
                                         <a href="{{ route('application.edit', $all->id)}}"
                                             class="dropdown-item text-success">Edit</a>
                                         @endif
 
                                         @if ($all->application_status_id != 3)
-                                        @if (
-                                        $all->application_status_id == 1 ||
-                                        $all->leave_type_id == 2 ||
-                                        $all->leave_type_id == 4 ||
-                                        ($all->leave_type_id == 1 && $all->application_status_id == 2 && $all->from >
-                                        now()) ||
-                                        ($all->leave_type_id == 3 && $all->application_status_id == 2 && $all->from >
-                                        now())
-                                        )
-                                        <div class="dropdown-divider"></div>
-                                        <form action="{{ route('application.destroy', $all->id)}}" method="post">
-                                            @csrf
-                                            @method('DELETE')
-                                            <input class="dropdown-item text-danger" role="button" type="submit"
-                                                value="Delete" onclick="return confirm('Delete Application?');">
-                                        </form>
-                                        @endif
+                                            @if (
+                                            $all->application_status_id == 1 ||
+                                            $all->leave_type_id == 2 ||
+                                            $all->leave_type_id == 4 ||
+                                            ($all->leave_type_id == 1 && $all->application_status_id == 2 && $all->from >
+                                            now()) ||
+                                            ($all->leave_type_id == 3 && $all->application_status_id == 2 && $all->from >
+                                            now()) ||
+                                            ($all->leave_type_id == 5 && $all->application_status_id == 2 && $all->from >
+                                            now()) ||
+                                            ($all->leave_type_id == 6 && $all->application_status_id == 2 && $all->from >
+                                            now())
+                                            )
+                                                <div class="dropdown-divider"></div>
+                                                <form action="{{ route('application.destroy', $all->id)}}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <input class="dropdown-item text-danger" role="button" type="submit"
+                                                        value="Delete" onclick="return confirm('Delete Application?');">
+                                                </form>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -135,6 +141,7 @@
                             <th>Leave Type</th>
                             <th>From</th>
                             <th>To</th>
+                            <th>Days Taken</th>
                             <th>Applied At</th>
                             <th>Status</th>
 
@@ -148,6 +155,7 @@
                             <td>{{ $pending->refLeaveType->leave_type_name }}</td>
                             <td>{{ $pending->from }}</td>
                             <td>{{ $pending->to }}</td>
+                            <td>{{ $pending->days_taken }}</td>
                             <td>{{ $pending->created_at }}</td>
                             <td
                                 class="{{ ($pending->application_status_id == 2)?'text-success':(($pending->application_status_id == 3)?'text-danger':'text-info') }}">
@@ -197,6 +205,7 @@
                             <th>Leave Type</th>
                             <th>From</th>
                             <th>To</th>
+                            <th>Days Taken</th>
                             <th>Applied At</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -209,6 +218,7 @@
                             <td>{{ $approved->refLeaveType->leave_type_name }}</td>
                             <td>{{ $approved->from }}</td>
                             <td>{{ $approved->to }}</td>
+                            <td>{{ $approved->days_taken }}</td>
                             <td>{{ $approved->created_at }}</td>
                             <td
                                 class="{{ ($approved->application_status_id == 2)?'text-success':(($approved->application_status_id == 3)?'text-danger':'text-info') }}">
@@ -258,6 +268,7 @@
                             <th>Leave Type</th>
                             <th>From</th>
                             <th>To</th>
+                            <th>Days Taken</th>
                             <th>Applied At</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -270,6 +281,7 @@
                             <td>{{ $rejected->refLeaveType->leave_type_name }}</td>
                             <td>{{ $rejected->from }}</td>
                             <td>{{ $rejected->to }}</td>
+                            <td>{{ $rejected->days_taken }}</td>
                             <td>{{ $rejected->created_at }}</td>
                             <td
                                 class="{{ ($rejected->application_status_id == 2)?'text-success':(($rejected->application_status_id == 3)?'text-danger':'text-info') }}">

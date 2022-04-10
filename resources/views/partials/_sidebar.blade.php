@@ -100,6 +100,16 @@
                     </ul>
                 </li>
 
+                <!-- Manage Leave (Admin) -->
+                <li class="nav-item mb-1">
+                    <a href="{{ route('leave_management.index') }}" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Manage Leave
+                        </p>
+                    </a>
+                </li>
+
                 <!-- Manage Holidays (Admin) -->
                 <li class="nav-item has-treeview mb-1">
                     <a href="#" class="nav-link">
@@ -155,9 +165,28 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('admin.logs_view') }}" class="nav-link">
+                            <a href="{{ route('admin.admin_user_log_index') }}" class="nav-link">
                                 <i class="nav-icon fas fa-briefcase"></i>
                                 <p>User Logs</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Manage Office (Admin) -->
+                <li class="nav-item has-treeview mb-1">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-building"></i>
+                        <p>
+                            Manage Office
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.admin_office_index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-briefcase"></i>
+                                <p>Office Logs</p>
                             </a>
                         </li>
                     </ul>
@@ -166,6 +195,31 @@
 
                 @if (Auth::user()->role_id == 2 || Auth::user()->role_id == 3)
                 <li class="nav-header text-uppercase">Employee</li>
+
+                <!-- Manage Employee Details (Users) -->
+                <li class="nav-item has-treeview mb-1">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon far fa-id-card"></i>
+                        <p>
+                            Manage Account
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('user.show', Auth::id())}}" class="nav-link">
+                                <i class="fas fa-id-card-alt nav-icon"></i>
+                                <p>Employee Details</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('reset.view')}}" class="nav-link">
+                                <i class="fas fa-key nav-icon"></i>
+                                <p>Change Password</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 <!-- Apply Leave (Users)-->
                 <li class="nav-item mb-1">
@@ -196,38 +250,21 @@
                     </ul>
                 </li>
 
-                <!-- Manage Employee Details (Admin) -->
-                <li class="nav-item has-treeview mb-1">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon far fa-id-card"></i>
-                        <p>
-                            Manage Account
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('user.show', Auth::id())}}" class="nav-link">
-                                <i class="fas fa-id-card-alt nav-icon"></i>
-                                <p>Employee Details</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('reset.view')}}" class="nav-link">
-                                <i class="fas fa-key nav-icon"></i>
-                                <p>Change Password</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
                 <!-- Work From Home (Users)-->
                 <li class="nav-item mb-1">
-                    <a href="{{ route('attendance.view') }}" class="nav-link">
+                    <a href="{{ route('user_log.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-laptop-house"></i>
                         <p>
                             Work From Home
                         </p>
+                    </a>
+                </li>
+
+                <!-- Office -->
+                <li class="nav-item mb-1">
+                    <a href="{{ route('office.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-building"></i>
+                        <p>Office</p>
                     </a>
                 </li>
                 @endif

@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Mail\ApproverMail;
 use App\Models\LeaveApplication;
+use App\Models\LeaveDetail;
 use App\Models\User;
 use App\Notifications\ApproverAlert;
 use Carbon\Carbon;
@@ -41,18 +42,21 @@ trait ApproverTrait
             ->select('user_details.*', 'users.*', 'leave_applications.*', 'leave_applications.id as pending_id')
             ->where('user_details.approver_id', Auth::id())
             ->where('application_status_id', 1)
+            ->orderBy('created_at', 'desc')
             ->paginate(5, ['*'], 'pendings');
         $approveds   = LeaveApplication::join('users', 'leave_applications.user_id', '=', 'users.id')
             ->join('user_details', 'users.id', '=', 'user_details.user_id')
             ->select('user_details.*', 'users.*', 'leave_applications.*', 'leave_applications.id as approved_id')
             ->where('user_details.approver_id', Auth::id())
             ->where('application_status_id', 2)
+            ->orderBy('created_at', 'desc')
             ->paginate(5, ['*'], 'approved');
         $rejecteds   = LeaveApplication::join('users', 'leave_applications.user_id', '=', 'users.id')
             ->join('user_details', 'users.id', '=', 'user_details.user_id')
             ->select('user_details.*', 'users.*', 'leave_applications.*', 'leave_applications.id as rejected_id')
             ->where('user_details.approver_id', Auth::id())
             ->where('application_status_id', 3)
+            ->orderBy('created_at', 'desc')
             ->paginate(5, ['*'], 'rejected');
 
         return compact('pendings','approveds','rejecteds');
@@ -70,39 +74,6 @@ trait ApproverTrait
                         ->where('user_details.approver_id' , Auth::id() )
                         ->paginate(10);
         return $users;
-
-    }
-
-    /**
-     * Approve applications trait (approver).
-     *
-     * @param  App\Models\LeaveApplication $application
-     * @return \Illuminate\Http\Response
-     */
-    public function approve_trait(LeaveApplication $application)
-    {
-        $application->application_status_id    = 2;
-        $application->approval_date            = Carbon::now();
-        $application->save();
-
-        Mail::to($application->user->email)->send(new ApproverMail($application->id));
-        $application->user->notify(new ApproverAlert($application));
-    }
-
-    /**
-     * Reject applications trait (approver).
-     *
-     * @param  App\Models\LeaveApplication $application
-     * @return \Illuminate\Http\Response
-     */
-    public function reject_trait(LeaveApplication $application)
-    {
-        $application->application_status_id = 3;
-        $application->approval_date         = Carbon::now();
-        $application->save();
-
-        Mail::to($application->user->email)->send(new ApproverMail($application->id));
-        $application->user->notify(new ApproverAlert($application));
     }
 
 }

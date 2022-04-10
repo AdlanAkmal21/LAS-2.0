@@ -39,6 +39,8 @@
 
     <!-- ./wrapper -->
     @include('partials._script')
+    @stack('scripts')
+
 </body>
 
 </html>

@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\AdminEditRequest;
 use App\Http\Requests\AdminPostRequest;
-
+use App\Models\ActivityLog;
 use App\Models\User;
 use App\Models\UserDetail;
 use App\Models\File;
 use App\Models\LeaveApplication;
+use App\Models\OfficeLog;
 use App\Models\RefRole;
 use App\Models\RefEmpStatus;
 use App\Models\RefGender;
@@ -40,6 +41,8 @@ class AdminController extends Controller
     {
         $dashboard_admins_array   = $this->dashboard_admins();
         $offdutyArray           = $this->off_duty_index();
+
+        // dd($offdutyArray);
 
         return view('admin.dashboard', compact('dashboard_admins_array', 'offdutyArray'));
     }
@@ -201,7 +204,7 @@ class AdminController extends Controller
         $query = $request->search;
         $users = User::where('id', '!=', 1)->where('name', 'like', "%{$query}%")->paginate(10);
 
-        return view('report.individual_list', compact('users'));
+        return view('report.individual.individual_list', compact('users'));
     }
 
     /**
@@ -223,10 +226,10 @@ class AdminController extends Controller
     public function application_list()
     {
         $title      = '(Overall)';
-        $alls       = LeaveApplication::paginate(10, ['*'], 'alls');
-        $pendings   = LeaveApplication::where('application_status_id', 1)->paginate(10, ['*'], 'pendings');
-        $approveds  = LeaveApplication::where('application_status_id', 2)->paginate(10, ['*'], 'approveds');
-        $rejecteds  = LeaveApplication::where('application_status_id', 3)->paginate(10, ['*'], 'rejecteds');
+        $alls       = LeaveApplication::orderBy('created_at', 'desc')->paginate(10, ['*'], 'alls');
+        $pendings   = LeaveApplication::where('application_status_id', 1)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'pendings');
+        $approveds  = LeaveApplication::where('application_status_id', 2)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'approveds');
+        $rejecteds  = LeaveApplication::where('application_status_id', 3)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'rejecteds');
 
         return view('admin.application.application_list', compact('title', 'alls', 'pendings', 'approveds', 'rejecteds'));
     }
@@ -240,10 +243,10 @@ class AdminController extends Controller
     public function application_list_ty(int $year)
     {
         $title      = '(This Year)';
-        $alls       = LeaveApplication::whereYear('created_at', $year)->paginate(10, ['*'], 'alls');
-        $pendings   = LeaveApplication::whereYear('created_at', $year)->where('application_status_id', 1)->paginate(10, ['*'], 'pendings');
-        $approveds  = LeaveApplication::whereYear('created_at', $year)->where('application_status_id', 2)->paginate(10, ['*'], 'approveds');
-        $rejecteds  = LeaveApplication::whereYear('created_at', $year)->where('application_status_id', 3)->paginate(10, ['*'], 'rejecteds');
+        $alls       = LeaveApplication::whereYear('created_at', $year)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'alls');
+        $pendings   = LeaveApplication::whereYear('created_at', $year)->where('application_status_id', 1)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'pendings');
+        $approveds  = LeaveApplication::whereYear('created_at', $year)->where('application_status_id', 2)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'approveds');
+        $rejecteds  = LeaveApplication::whereYear('created_at', $year)->where('application_status_id', 3)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'rejecteds');
 
         return view('admin.application.application_list', compact('title', 'alls', 'pendings', 'approveds', 'rejecteds'));
     }
@@ -257,10 +260,10 @@ class AdminController extends Controller
     {
         $user       = User::find($user_id);
         $title      = "($user->name)";
-        $alls       = LeaveApplication::where('user_id', $user->id)->paginate(10, ['*'], 'alls');
-        $pendings   = LeaveApplication::where('user_id', $user->id)->where('application_status_id', 1)->paginate(10, ['*'], 'pendings');
-        $approveds  = LeaveApplication::where('user_id', $user->id)->where('application_status_id', 2)->paginate(10, ['*'], 'approveds');
-        $rejecteds  = LeaveApplication::where('user_id', $user->id)->where('application_status_id', 3)->paginate(10, ['*'], 'rejecteds');
+        $alls       = LeaveApplication::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'alls');
+        $pendings   = LeaveApplication::where('user_id', $user->id)->where('application_status_id', 1)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'pendings');
+        $approveds  = LeaveApplication::where('user_id', $user->id)->where('application_status_id', 2)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'approveds');
+        $rejecteds  = LeaveApplication::where('user_id', $user->id)->where('application_status_id', 3)->orderBy('created_at', 'desc')->paginate(10, ['*'], 'rejecteds');
 
         return view('admin.application.application_list', compact('title', 'alls', 'pendings', 'approveds', 'rejecteds'));
     }
@@ -285,7 +288,7 @@ class AdminController extends Controller
      */
     public function search_application()
     {
-        $applications  = LeaveApplication::paginate(10);
+        $applications  = LeaveApplication::orderBy('created_at', 'desc')->paginate(10);
         $refLeaveTypes = RefLeaveType::all();
 
         return view('admin.application.search_application', compact('applications', 'refLeaveTypes'));
@@ -302,58 +305,36 @@ class AdminController extends Controller
         $refLeaveTypes = RefLeaveType::all();
 
         if ($request->leave_type_id && $request->from && $request->to) {
-            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->whereDate('from', $request->from)->whereDate('to', $request->to)->paginate(10);
+            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->whereDate('from', $request->from)->whereDate('to', $request->to)->orderBy('created_at', 'desc')->paginate(10);
         } elseif ($request->from && $request->to) {
-            $applications = LeaveApplication::whereDate('from', '>=', $request->from)->whereDate('to', '<=', $request->to)->paginate(10);
+            $applications = LeaveApplication::whereDate('from', '>=', $request->from)->whereDate('to', '<=', $request->to)->orderBy('created_at', 'desc')->paginate(10);
         } elseif ($request->leave_type_id && $request->from) {
-            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->whereDate('from', $request->from)->paginate(10);
+            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->whereDate('from', $request->from)->orderBy('created_at', 'desc')->paginate(10);
         } elseif ($request->leave_type_id && $request->to) {
-            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->whereDate('to', $request->to)->paginate(10);
+            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->whereDate('to', $request->to)->orderBy('created_at', 'desc')->paginate(10);
         } elseif ($request->from) {
-            $applications = LeaveApplication::whereDate('from', $request->from)->paginate(10);
+            $applications = LeaveApplication::whereDate('from', $request->from)->orderBy('created_at', 'desc')->paginate(10);
         } elseif ($request->to) {
-            $applications = LeaveApplication::whereDate('to', $request->to)->paginate(10);
+            $applications = LeaveApplication::whereDate('to', $request->to)->orderBy('created_at', 'desc')->paginate(10);
         } elseif ($request->leave_type_id) {
-            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->paginate(10);
+            $applications = LeaveApplication::where('leave_type_id', $request->leave_type_id)->orderBy('created_at', 'desc')->paginate(10);
         } else {
-            $applications = LeaveApplication::paginate(10);
+            $applications = LeaveApplication::orderBy('created_at', 'desc')->paginate(10);
         }
 
         return view('admin.application.search_application', compact('applications', 'refLeaveTypes'));
     }
 
-        /**
-     * Display listings of user logs.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function logs_view()
+    /**
+    * Display the listing of resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function activity_log()
     {
-        $month = '';
-        $year = '';
-        $user_logs = UserLog::all();
+        $activities = ActivityLog::orderBy('created_at', 'desc')->paginate(20);
 
-        return view('report.user_log.user_logs_admin', compact('user_logs', 'month', 'year'));
+        return view('admin.activity_log.activity_log_index', compact('activities'));
     }
 
-        /**
-     * Display listings of user logs.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function logs_view_search(Request $request)
-    {
-        if($request->get('date') == ''){
-            $month = '';
-            $year = '';
-            $user_logs = UserLog::all();
-        } else{
-            $month = date('m', strtotime($request->get('date')));
-            $year = date('Y', strtotime($request->get('date')));
-            $user_logs = UserLog::whereYear('date', $year)->whereMonth('date', $month)->get();
-        }
-
-        return view('report.user_log.user_logs_admin', compact('user_logs', 'month', 'year'));
-    }
 }

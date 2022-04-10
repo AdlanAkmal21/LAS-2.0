@@ -50,13 +50,19 @@
                     @foreach ($user_logs as $key => $user_log)
                     <tr>
                         <td>{{ $key + 1 }}</td>
-                        <td>{{ $user_log->user->name }}</td>
-                        <td>{{ $user_log->date }}</td>
-                        <td>{{ $user_log->period }}</td>
-                        <td>{{ $user_log->clock_in }}</td>
-                        <td>{{ $user_log->clock_out }}</td>
+                        <td>{{ $user_log->user->name ?? '--' }}</td>
+                        <td>{{ $user_log->date ?? '--' }}</td>
+                        <td>{{ $user_log->period ?? '--' }}</td>
+                        <td>{{ $user_log->clock_in ?? '--' }}</td>
+                        <td>{{ $user_log->clock_out ?? '--' }}</td>
                     </tr>
                     @endforeach
+
+                    @if ($user_logs->isEmpty())
+                        <tr>
+                            <td colspan="6" class="text-center">No data available.</td>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
         </div>
